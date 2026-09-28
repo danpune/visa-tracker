@@ -27,3 +27,9 @@ Then `python3 build.py` → `data.json` (it asserts the data still looks sane).
 - **Legal entity roll-up is an explicit allow-list** in `companies.json`. Fuzzy matching pulls in unrelated firms ("Platinum Infosys Inc", "HCL Global Systems Inc").
 - **FY2026 is partial** (USCIS through Q3, LCAs through June 2026).
 - The Visa Guide carries dated legal content ("last reviewed September 2026"): the $100k H-1B fee litigation and the wage-weighted lottery will keep changing.
+
+## Link preview and visit counts
+
+- `og.png` is the 1200×630 preview WhatsApp, iMessage, Slack and LinkedIn show. Its source is `og.html`; to change it, edit that page, render it at 1200×630 (any browser screenshot at that size works) and save as `og.png`. Keep it under ~300 KB so WhatsApp shows it.
+- Visits, where they came from, and which tabs get opened are counted with the free [Abacus](https://abacus.jasoncameron.dev/) API under `danpune-visa-tracker/*`: no cookies, once per browser session, live site only (`danpune.github.io`). See the totals at `/stats.html`. The Share buttons add `?s=wa` / `?s=link` so shared visits are attributed; the page strips it from the address bar.
+

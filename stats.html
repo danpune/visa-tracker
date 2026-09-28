@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>US Work Visa Tracker: stats</title>
+<style>
+body { margin: 0; padding: 24px 16px; font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: #f9f9f7; color: #0b0b0b; }
+@media (prefers-color-scheme: dark) { body { background: #0d0d0d; color: #fff; } }
+main { max-width: 520px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; }
+h2 { font-size: 15px; margin: 22px 0 6px; opacity: .7; }
+p { margin: 0 0 8px; font-size: 14px; opacity: .75; }
+table { width: 100%; border-collapse: collapse; }
+td { padding: 7px 0; border-top: 1px solid rgba(128, 128, 128, .25); }
+td:last-child { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+<h1>US Work Visa Tracker: stats</h1>
+<p>Anonymous running totals from <a href="./">the tracker</a>. Visits and tabs count once per browser session. No cookies and no personal data.</p>
+<div id="out"></div>
+</main>
+<script>
+const groups = [
+  ['Visits', [['visits', 'All visits']]],
+  ['Where visits came from', [['src-direct', 'Typed or no referrer'], ['src-wa', 'WhatsApp share button'], ['src-link', 'Copy link button'],
+    ['src-search', 'Search engine'], ['src-social', 'Social or video site'], ['src-github', 'GitHub'], ['src-other', 'Other site']]],
+  ['Tabs opened', [['tab-employers', 'Employers'], ['tab-l1', 'L-1 visas'], ['tab-map', 'Where they work'], ['tab-greencard', 'Green card wait'],
+    ['tab-guide', 'Visa guide'], ['tab-news', 'News']]],
+];
+const out = document.getElementById('out');
+for (const [title, keys] of groups) {
+  out.insertAdjacentHTML('beforeend', `<h2>${title}</h2>`);
+  const t = document.createElement('table'); out.append(t);
+  for (const [key, label] of keys) {
+    const r = t.insertRow(); r.insertCell().textContent = label; const n = r.insertCell(); n.textContent = '…';
+    fetch('https://abacus.jasoncameron.dev/get/danpune-visa-tracker/' + key)
+      .then(x => x.ok ? x.json() : { value: 0 })   // a key nobody has hit yet is a 404
+      .then(d => { n.textContent = (d.value || 0).toLocaleString('en-US'); })
+      .catch(() => { n.textContent = '?'; });
+  }
+}
+</script>
+</body>
+</html>

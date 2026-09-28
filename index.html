@@ -4,9 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>US Work Visa Tracker</title>
-<meta name="description" content="H-1B sponsors, where visa holders work, green card priority dates, and a plain-English guide to US work visas. Built from USCIS, Department of Labor and State Department data.">
+<meta name="description" content="Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is. Free, from USCIS, Department of Labor and State Department data.">
+<link rel="canonical" href="https://danpune.github.io/visa-tracker/">
+<meta property="og:type" content="website">
 <meta property="og:title" content="US Work Visa Tracker">
-<meta property="og:description" content="Who sponsors H-1B visas, where those jobs are, what they pay, and how long the green card line is.">
+<meta property="og:description" content="Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is.">
+<meta property="og:url" content="https://danpune.github.io/visa-tracker/">
+<meta property="og:image" content="https://danpune.github.io/visa-tracker/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="US Work Visa Tracker: top H-1B sponsors in FY2025, led by Amazon">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314365c'/%3E%3Crect x='14' y='30' width='9' height='20' rx='2' fill='%23fff'/%3E%3Crect x='27.5' y='20' width='9' height='30' rx='2' fill='%23fff'/%3E%3Crect x='41' y='12' width='9' height='38' rx='2' fill='%23fff'/%3E%3C/svg%3E">
 <style>
 :root {
   color-scheme: light;
@@ -96,12 +105,17 @@ ul.news time { display: block; color: var(--muted); font-size: 12px; font-varian
 ul.news a { color: var(--ink); text-decoration: none; }
 ul.news a:hover { text-decoration: underline; }
 footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(--ink-2); font-size: 13px; }
+.sharecard { max-width: 1180px; margin: 8px auto 0; padding: 18px 16px 6px; text-align: center; border-top: 1px solid var(--grid); }
+.sharecard p { margin: 0 0 10px; }
+.btn { display: inline-block; font: inherit; font-size: 15px; font-weight: 600; padding: 10px 18px; margin: 4px; border-radius: 999px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; }
+.btn.wa { background: #25d366; border-color: #25d366; color: #083b1d; }
+.visits b { color: var(--ink); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <header>
   <h1>US Work Visa Tracker</h1>
-  <p class="sub">Who sponsors H-1B visas, where those jobs are, what they pay, and how long the green card line is. Built from public USCIS, Department of Labor and State Department data.</p>
+  <p class="sub">Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is. Built from public USCIS, Department of Labor and State Department data.</p>
   <p class="note" id="updated" style="margin:-8px 0 12px"></p>
   <nav role="tablist">
     <button role="tab" data-tab="employers" aria-selected="true">Employers</button>
@@ -328,7 +342,15 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 </section>
 </main>
 
-<footer id="foot"></footer>
+<section class="sharecard">
+  <p><b>Know someone on an H-1B or L-1, or waiting for a green card?</b><br><span class="note">Send them this page. It's free, with no sign-up.</span></p>
+  <p><a class="btn wa" id="wa" href="https://wa.me/" target="_blank" rel="noopener">Share on WhatsApp</a> <button class="btn" id="copylink" type="button">Copy link</button></p>
+</section>
+<footer>
+  <div id="foot"></div>
+  <p>This site keeps anonymous totals only: visits, where they came from (such as search or a WhatsApp share) and which tabs get opened. No cookies, no accounts, and nothing about you is stored.</p>
+  <p class="visits" id="visits" hidden>👀 <b id="visitcount">–</b> visits</p>
+</footer>
 <div class="tip" id="tip"></div>
 
 <script>
@@ -343,10 +365,41 @@ function hideTip() { tip.style.display = 'none'; }
 addEventListener('scroll', hideTip, { passive: true });  // touch screens have no mouseleave
 let D;
 
+// ---------- anonymous totals via the free Abacus API: no cookies, no IDs, live site only ----------
+const LIVE = location.hostname === 'danpune.github.io', ABACUS = 'https://abacus.jasoncameron.dev/', NSP = 'danpune-visa-tracker/';
+const hit = key => { if (LIVE) fetch(ABACUS + 'hit/' + NSP + key).catch(() => {}); };
+// true the first time a key is seen in this browser session, so refreshes don't inflate counts
+const once = key => { try { if (sessionStorage.getItem('vt-' + key)) return false; sessionStorage.setItem('vt-' + key, '1'); } catch (e) {} return true; };
+(function countVisit() {
+  let src = (/[?&]s=(wa|link)\b/.exec(location.search) || [])[1];  // our share buttons tag their links
+  if (src) history.replaceState(null, '', location.pathname + location.hash);
+  if (!src) {
+    let h = ''; try { h = new URL(document.referrer).hostname; } catch (e) {}
+    src = !h ? 'direct' : /(google|bing|duckduckgo|yahoo)\./.test(h) ? 'search'
+      : /reddit|facebook|instagram|linkedin|youtube|twitter|whatsapp|^t\.co$|(^|\.)x\.com$/.test(h) ? 'social' : /github/.test(h) ? 'github' : 'other';
+  }
+  if (!LIVE) return;
+  const first = once('visit');
+  if (first) hit('src-' + src);
+  fetch(ABACUS + (first ? 'hit/' : 'get/') + NSP + 'visits').then(r => r.ok ? r.json() : Promise.reject())
+    .then(d => { if (typeof d.value === 'number') { $('#visitcount').textContent = d.value.toLocaleString('en-US'); $('#visits').hidden = false; } })
+    .catch(() => { /* the counter is optional; stay hidden */ });
+})();
+
+// ---------- sharing ----------
+const pageUrl = 'https://danpune.github.io/visa-tracker/';
+$('#wa').href = 'https://wa.me/?text=' + encodeURIComponent('US Work Visa Tracker: who sponsors H-1B and L-1 visas, where the jobs are, what they pay, and green card wait times 👇\n' + pageUrl + '?s=wa');
+$('#copylink').onclick = () => {
+  const url = pageUrl + '?s=link', done = () => { $('#copylink').textContent = 'Link copied ✓'; setTimeout(() => $('#copylink').textContent = 'Copy link', 2000); };
+  if (navigator.share && /Mobi|Android|iPhone/i.test(navigator.userAgent)) return navigator.share({ title: document.title, url }).catch(() => {});
+  if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, () => prompt('Copy this link:', url)); else prompt('Copy this link:', url);
+};
+
 // ---------- tabs (hash-linked) ----------
 function openTab(id) {
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === id));
   document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== id);
+  if (once('tab-' + id)) hit('tab-' + id);
   if (id === 'map' && D) drawMap();
   if (id === 'greencard' && D) drawGC();
   if (id === 'news') loadNews();
