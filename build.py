@@ -10,6 +10,7 @@ import csv, glob, json, re, statistics
 from datetime import datetime, timezone
 
 from bulletin import shape
+import l1
 from collections import Counter, defaultdict
 
 YEARS = sorted(int(re.search(r"(\d{4})", f).group(1)) for f in glob.glob("raw/uscis_*.csv"))
@@ -101,6 +102,11 @@ dates.sort()
 bulletin = shape(json.load(open("raw/visa_bulletin_mirror.json")))
 months = bulletin["months"]
 
+# --- L-1: employer-level only FY2015-2019 (USCIS stopped publishing), national through the latest quarter --
+l1_owner = {norm(n): c["id"] for c in companies for n in c.get("l1_names", [])}
+l1_per, l1_totals, l1_top = l1.employer(l1_owner)
+l1_nat = l1.national()
+
 # --- Assemble ---------------------------------------------------------------------------------------
 layoffs = json.load(open("layoffs.json"))
 headcount = {h["id"]: h for h in json.load(open("headcount.json"))}
@@ -110,16 +116,19 @@ out = {
     "lca_period": [dates[0], dates[len(dates) // 2], dates[-1]],
     "lca_national": nat,
     "companies": [{
-        "id": c["id"], "name": c["name"], "legal_names": c["names"],
+        "id": c["id"], "name": c["name"], "legal_names": c["names"], "l1_names": c.get("l1_names", []),
         "uscis": {y: dict(uscis[c["id"]][y]) for y in YEARS},
         "lca": summarize(lca_by[c["id"]]) if lca_by[c["id"]] else None,
         "layoffs": layoffs.get(c["layoffs"]) if c["layoffs"] else None,
         "headcount": headcount.get(c["id"]),
+        "l1": l1_per.get(c["id"], {}),
     } for c in companies],
+    "l1": {"employer_totals": l1_totals, "top_2019": l1_top, "national": l1_nat},
     "bulletin": bulletin,
     # when each source was last pulled; shown on the page so readers can judge freshness
     "updated": {"site": datetime.now(timezone.utc).date().isoformat(), "uscis": f"FY{YEARS[-1]} Q3", "lca": dates[-1],
-                "bulletin": months[-1], "layoffs": "2026-09-27", "headcount": "2026-09-27"},
+                "bulletin": months[-1], "layoffs": "2026-09-27", "headcount": "2026-09-27",
+                "l1_national": f"FY{max(l1_nat['l1a'])} Q3", "l1_employer": f"FY{max(l1_totals)}"},
 }
 json.dump(out, open("data.json", "w"), separators=(",", ":"))
 print(f"FY{YEARS[0]}-{YEARS[-1]}; LCA {len(lca_all)} certified H-1B ({dates[0]}..{dates[-1]}); "
@@ -133,3 +142,5 @@ for c in out["companies"]:
     assert all(c["uscis"][y].get("approvals") for y in YEARS), f'{c["id"]}: a year has no USCIS approvals (renamed entity?)'
     assert c["lca"] and c["lca"]["lcas"] > 100, f'{c["id"]}: too few LCAs matched (renamed entity?)'
 assert 50_000 < nat["wage_median"] < 250_000, "median wage looks wrong (unit parsing?)"
+assert l1_nat["h1b"][YEARS[-1]]["approved"] == national[YEARS[-1]]["approvals"], "I-129 workbook and Employer Data Hub disagree on H-1B"
+assert l1_per["tcs"][2019]["total"] == 1542, "L-1 employer parse changed"
