@@ -1,0 +1,440 @@
+{
+ "_source": "layoffs.fyi (free to use with attribution), captured 2026-09-27",
+ "amazon": [
+  {
+   "date": "2026-09-01",
+   "count": 148,
+   "source": "https://www.sfchronicle.com/tech/article/amazon-synopsys-tech-layoffs-22413103.php"
+  },
+  {
+   "date": "2026-08-31",
+   "count": 121,
+   "source": "https://www.geekwire.com/2026/amazon-lays-off-121-workers-across-corporate-and-fulfillment-jobs-in-washington-state/"
+  },
+  {
+   "date": "2026-07-22",
+   "count": null,
+   "source": "https://www.reuters.com/business/world-at-work/amazon-cuts-jobs-its-artificial-general-intelligence-group-2026-07-22/"
+  },
+  {
+   "date": "2026-07-22",
+   "count": 1110,
+   "source": "https://www.msn.com/en-us/money/companies/amazon-to-renovate-two-florida-warehouses-for-400m-cut-1-100-jobs/ar-AA28s48O"
+  },
+  {
+   "date": "2026-07-06",
+   "count": 57,
+   "source": "https://www.geekwire.com/2026/filing-shows-amazon-cut-57-tech-jobs-in-washington-state-in-recent-weeks/"
+  },
+  {
+   "date": "2026-03-04",
+   "count": 100,
+   "source": "https://finance.yahoo.com/news/amazon-cuts-more-jobs-time-212928090.html"
+  },
+  {
+   "date": "2026-01-28",
+   "count": 16000,
+   "source": "https://www.aboutamazon.com/news/company-news/amazon-layoffs-corporate-jan-2026"
+  },
+  {
+   "date": "2025-12-15",
+   "count": 84,
+   "source": "https://www.bizjournals.com/seattle/news/2025/12/15/amazon-layoffs-84-february.html"
+  },
+  {
+   "date": "2025-10-27",
+   "count": 14000,
+   "source": "https://www.cnbc.com/2025/10/28/amazon-layoffs-corporate-workers-ai.html"
+  },
+  {
+   "date": "2025-07-17",
+   "count": null,
+   "source": "https://www.reuters.com/business/retail-consumer/amazons-aws-cloud-computing-unit-cuts-least-hundreds-jobs-sources-say-2025-07-17/"
+  },
+  {
+   "date": "2025-05-14",
+   "count": 100,
+   "source": "https://www.cnbc.com/2025/05/14/amazon-lays-off-about-100-employees-in-devices-and-services-unit.html"
+  },
+  {
+   "date": "2025-01-29",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/articles/2025-01-29/amazon-cuts-dozens-of-corporate-jobs-in-latest-round-of-layoffs"
+  },
+  {
+   "date": "2024-04-03",
+   "count": null,
+   "source": "https://www.geekwire.com/2024/amazon-web-services-cuts-hundreds-of-jobs-in-sales-training-and-physical-stores-technology/"
+  },
+  {
+   "date": "2024-02-06",
+   "count": 400,
+   "source": "https://www.businessinsider.com/amazon-one-medical-pharmacy-layoffs-broader-cost-cutting-campaign-2024-2"
+  },
+  {
+   "date": "2024-01-18",
+   "count": 30,
+   "source": "https://www.cnbc.com/2024/01/18/-amazon-layoffs-hit-its-buy-with-prime-unit.html"
+  },
+  {
+   "date": "2024-01-10",
+   "count": null,
+   "source": "https://www.reuters.com/technology/amazon-lay-off-employees-prime-video-studios-divisions-information-2024-01-10/"
+  },
+  {
+   "date": "2023-11-17",
+   "count": null,
+   "source": "https://www.geekwire.com/2023/amazon-will-cut-several-hundred-more-jobs-on-alexa-team-as-it-discontinues-some-initiatives/"
+  },
+  {
+   "date": "2023-11-13",
+   "count": 180,
+   "source": "https://www.cnbc.com/2023/11/13/amazon-cuts-more-than-180-jobs-in-gaming-division.html"
+  },
+  {
+   "date": "2023-11-08",
+   "count": null,
+   "source": "https://www.reuters.com/technology/amazon-says-cuts-jobs-music-streaming-unit-2023-11-08/"
+  },
+  {
+   "date": "2023-07-13",
+   "count": 80,
+   "source": "https://news.yahoo.com/amazon-lays-off-80-workers-230451163.html"
+  },
+  {
+   "date": "2023-03-20",
+   "count": 9000,
+   "source": "https://www.cnbc.com/2023/03/20/amazon-layoffs-company-to-cut-off-9000-more-workers.html"
+  },
+  {
+   "date": "2023-01-04",
+   "count": 8000,
+   "source": "https://www.wsj.com/articles/amazon-to-lay-off-over-17-000-workers-more-than-first-planned-11672874304"
+  },
+  {
+   "date": "2022-11-16",
+   "count": 10000,
+   "source": "https://www.nytimes.com/2022/11/14/technology/amazon-layoffs.html"
+  },
+  {
+   "date": "2022-10-28",
+   "count": 150,
+   "source": "https://www.geekwire.com/2022/amazon-makes-staff-cuts-at-amp-the-app-it-launched-this-year-to-reimagine-radio/"
+  }
+ ],
+ "google": [
+  {
+   "date": "2026-08-05",
+   "count": 52,
+   "source": "https://www.geekwire.com/2026/google-to-cut-52-employees-in-washington-state/"
+  },
+  {
+   "date": "2026-06-04",
+   "count": null,
+   "source": "https://www.businessinsider.com/google-clouds-quiet-layoffs-hit-cybersecurity-teams-2026-6"
+  },
+  {
+   "date": "2025-10-02",
+   "count": 50,
+   "source": "https://www.sfchronicle.com/tech/article/google-bay-area-layoffs-21081705.php"
+  },
+  {
+   "date": "2025-10-01",
+   "count": 100,
+   "source": "https://www.cnbc.com/2025/10/01/google-cloud-unit-layoffs.html"
+  },
+  {
+   "date": "2025-06-24",
+   "count": 75,
+   "source": "https://www.theinformation.com/articles/google-cuts-smart-tv-budget-doubles-youtube"
+  },
+  {
+   "date": "2025-04-11",
+   "count": null,
+   "source": "https://www.reuters.com/technology/google-lays-off-hundreds-employees-android-pixel-group-information-reports-2025-04-11/"
+  },
+  {
+   "date": "2025-02-27",
+   "count": null,
+   "source": "https://www.cnbc.com/2025/02/27/google-makes-cuts-to-hr-and-cloud-units.html"
+  },
+  {
+   "date": "2024-05-31",
+   "count": 100,
+   "source": "https://www.businessinsider.com/google-cloud-layoffs-job-cuts-employees-globally-2024-5"
+  },
+  {
+   "date": "2024-05-10",
+   "count": 57,
+   "source": "https://www.sfchronicle.com/tech/article/tech-layoffs-google-rivian-19451076.php"
+  },
+  {
+   "date": "2024-05-01",
+   "count": 200,
+   "source": "https://www.cnbc.com/2024/05/01/google-cuts-hundreds-of-core-workers-moves-jobs-to-india-mexico.html"
+  },
+  {
+   "date": "2024-04-30",
+   "count": null,
+   "source": "https://techcrunch.com/2024/04/29/google-lays-off-staff-from-flutter-dart-python-weeks-before-its-developer-conference/"
+  },
+  {
+   "date": "2024-04-17",
+   "count": null,
+   "source": "https://www.reuters.com/technology/google-lays-off-employees-shifts-some-roles-abroad-amid-cost-cuts-2024-04-17/"
+  },
+  {
+   "date": "2024-01-22",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/articles/2024-01-22/google-layoffs-saga-continues-as-alphabet-s-x-cuts-dozens-of-jobs-seeks-funds"
+  },
+  {
+   "date": "2024-01-16",
+   "count": null,
+   "source": "https://www.businessinsider.com/google-is-laying-off-hundreds-of-employees-in-its-advertising-team-2024-1"
+  },
+  {
+   "date": "2024-01-10",
+   "count": 1000,
+   "source": "https://www.theverge.com/2024/1/11/24034124/google-layoffs-engineering-assistant-hardware"
+  },
+  {
+   "date": "2023-11-08",
+   "count": null,
+   "source": "https://www.theinformation.com/briefings/google-lays-off-some-user-support-staff"
+  },
+  {
+   "date": "2023-10-18",
+   "count": 40,
+   "source": "https://www.cnbc.com/2023/10/18/google-cuts-dozens-of-jobs-in-news-division-.html"
+  },
+  {
+   "date": "2023-09-13",
+   "count": 75,
+   "source": "https://www.eastbaytimes.com/2023/10/31/google-tech-job-cut-layoff-bay-area-economy-office-lease-alphabet/"
+  },
+  {
+   "date": "2023-01-20",
+   "count": 12000,
+   "source": "https://www.nytimes.com/2023/01/20/business/google-alphabet-layoffs.html"
+  }
+ ],
+ "microsoft": [
+  {
+   "date": "2026-09-22",
+   "count": 500,
+   "source": "https://www.businessinsider.com/microsoft-starts-a-new-round-of-job-cuts-2026-9"
+  },
+  {
+   "date": "2026-07-06",
+   "count": 4800,
+   "source": "https://www.cnbc.com/2026/07/06/microsoft-cuts-2point1percent-of-employees-as-xbox-unit-plans-to-spin-studios.html"
+  },
+  {
+   "date": "2025-09-08",
+   "count": 42,
+   "source": "https://www.bizjournals.com/seattle/news/2025/09/08/microsoft-lays-off-dozens-more-employees-in-wa.html"
+  },
+  {
+   "date": "2025-07-02",
+   "count": 9000,
+   "source": "https://www.cnbc.com/2025/07/02/microsoft-laying-off-about-9000-employees-in-latest-round-of-cuts.html"
+  },
+  {
+   "date": "2025-06-24",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/articles/2025-06-24/microsoft-plans-major-job-cuts-at-xbox-gaming-division"
+  },
+  {
+   "date": "2025-06-02",
+   "count": 305,
+   "source": "https://www.geekwire.com/2025/new-filing-microsoft-cuts-another-305-jobs-in-washington-state/"
+  },
+  {
+   "date": "2025-05-13",
+   "count": 6000,
+   "source": "https://www.cnbc.com/2025/05/13/microsoft-is-cutting-3percent-of-workers-across-the-software-company.html"
+  },
+  {
+   "date": "2025-01-14",
+   "count": null,
+   "source": "https://www.businessinsider.com/microsoft-layoffs-hit-security-devices-sales-gaming-2025-1"
+  },
+  {
+   "date": "2025-01-07",
+   "count": null,
+   "source": "https://www.businessinsider.com/microsoft-plans-job-cuts-performance-management-2025-1"
+  },
+  {
+   "date": "2024-09-12",
+   "count": 650,
+   "source": "https://www.ign.com/articles/microsoft-lays-off-another-650-staff-from-its-video-game-workforce-xbox-boss-phil-spencer-sends-memo-to-staff"
+  },
+  {
+   "date": "2024-07-03",
+   "count": null,
+   "source": "https://www.geekwire.com/2024/microsoft-lays-off-employees-in-new-round-of-cuts/"
+  },
+  {
+   "date": "2024-06-03",
+   "count": 1000,
+   "source": "https://www.theverge.com/2024/6/3/24170902/microsoft-hololens-2-mixed-reality-azure-layoffs"
+  },
+  {
+   "date": "2024-01-25",
+   "count": 1900,
+   "source": "https://www.theverge.com/2024/1/25/24049050/microsoft-activision-blizzard-layoffs"
+  },
+  {
+   "date": "2023-07-18",
+   "count": 1000,
+   "source": "https://www.businessinsider.com/microsoft-layoffs-more-than-1000-jobs-sales-customer-service-2023-7"
+  },
+  {
+   "date": "2023-05-10",
+   "count": 158,
+   "source": "https://www.geekwire.com/2023/microsoft-cutting-more-jobs-in-seattle-region-beyond-global-layoffs-announced-in-january/"
+  },
+  {
+   "date": "2023-01-18",
+   "count": 10000,
+   "source": "https://www.usatoday.com/story/money/2023/01/18/microsoft-layoffs-10000-employees-stock/11074235002/"
+  },
+  {
+   "date": "2022-10-17",
+   "count": null,
+   "source": "https://www.cnbc.com/2022/10/18/microsoft-confirms-job-cuts-after-calling-for-growth-to-slow.html"
+  },
+  {
+   "date": "2022-07-12",
+   "count": null,
+   "source": "https://www.cnbc.com/2022/07/12/microsoft-cuts-small-percentage-of-employees-as-new-fiscal-year-begins.html"
+  }
+ ],
+ "meta": [
+  {
+   "date": "2026-05-20",
+   "count": 8000,
+   "source": "https://www.cnbc.com/2026/05/20/meta-layoffs-zuckerberg-says-success-isnt-a-given-in-memo.html"
+  },
+  {
+   "date": "2026-04-02",
+   "count": 200,
+   "source": "https://www.sfchronicle.com/tech/article/meta-layoffs-silicon-valley-22186184.php"
+  },
+  {
+   "date": "2026-03-25",
+   "count": 700,
+   "source": "https://www.nytimes.com/2026/03/25/technology/meta-layoffs-ai-executives.html"
+  },
+  {
+   "date": "2026-01-13",
+   "count": 1500,
+   "source": "https://www.nytimes.com/2026/01/12/technology/meta-layoffs-reality-labs.html"
+  },
+  {
+   "date": "2025-10-22",
+   "count": 600,
+   "source": "https://www.cnbc.com/2025/10/22/meta-layoffs-ai.html"
+  },
+  {
+   "date": "2025-04-24",
+   "count": 100,
+   "source": "https://www.bloomberg.com/news/articles/2025-04-24/meta-lays-off-more-than-100-staff-across-reality-labs-unit"
+  },
+  {
+   "date": "2025-02-10",
+   "count": 3600,
+   "source": "https://finance.yahoo.com/news/mark-zuckerberg-warned-employees-prepare-174916671.html"
+  },
+  {
+   "date": "2024-10-16",
+   "count": null,
+   "source": "https://www.theverge.com/2024/10/16/24272195/meta-layoffs-whatsapp-instagram-reality-labs"
+  },
+  {
+   "date": "2024-03-06",
+   "count": null,
+   "source": "https://www.businessinsider.com/meta-facebook-messenger-hit-with-layoffs-2024-3"
+  },
+  {
+   "date": "2023-10-04",
+   "count": null,
+   "source": "https://www.reuters.com/technology/meta-lay-off-employees-metaverse-silicon-unit-wednesday-2023-10-03/"
+  },
+  {
+   "date": "2023-03-14",
+   "count": 10000,
+   "source": "https://about.fb.com/news/2023/03/mark-zuckerberg-meta-year-of-efficiency/"
+  },
+  {
+   "date": "2022-11-09",
+   "count": 11000,
+   "source": "https://www.cnbc.com/2022/11/09/meta-to-lay-off-more-than-11000-thousand-employees.html"
+  }
+ ],
+ "apple": [
+  {
+   "date": "2026-09-21",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/newsletters/2026-09-20/apple-s-home-ai-hub-details-apple-fitness-layoffs-and-iphone-duo-apple-pencil-mu9vv9k0"
+  },
+  {
+   "date": "2026-08-21",
+   "count": 200,
+   "source": "https://www.bloomberg.com/news/articles/2026-08-21/apple-cuts-jobs-in-siri-vision-pro-immersive-video-and-gaming-teams"
+  },
+  {
+   "date": "2024-11-24",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/articles/2025-11-24/apple-aapl-cuts-jobs-across-its-sales-organization-in-rare-layoff"
+  },
+  {
+   "date": "2024-08-27",
+   "count": 100,
+   "source": "https://www.bloomberg.com/news/articles/2024-08-28/apple-cuts-about-100-services-jobs-as-part-of-priority-shift"
+  },
+  {
+   "date": "2024-04-04",
+   "count": 614,
+   "source": "https://www.bloomberg.com/news/articles/2024-04-04/apple-cut-at-least-600-workers-when-car-screen-projects-stopped"
+  },
+  {
+   "date": "2024-02-27",
+   "count": null,
+   "source": "https://techcrunch.com/2024/02/27/apple-cancels-electric-car-project-titan/"
+  },
+  {
+   "date": "2023-04-03",
+   "count": null,
+   "source": "https://www.bloomberg.com/news/articles/2023-04-03/apple-to-make-small-number-of-job-cuts-in-some-corporate-retail-teams"
+  }
+ ],
+ "ibm": [
+  {
+   "date": "2024-09-18",
+   "count": null,
+   "source": "https://www.theregister.com/2024/09/18/ibm_job_cuts/"
+  },
+  {
+   "date": "2024-08-26",
+   "count": 1000,
+   "source": "https://www.reuters.com/technology/ibm-close-china-rd-department-affecting-over-1000-jobs-yicai-reports-2024-08-26/"
+  },
+  {
+   "date": "2024-03-12",
+   "count": null,
+   "source": "https://www.cnbc.com/2024/03/12/ibm-tells-employees-of-job-cuts-in-marketing-and-communications.html"
+  },
+  {
+   "date": "2023-07-17",
+   "count": null,
+   "source": "https://www.calcalistech.com/ctechnews/article/ryacsbqqh"
+  },
+  {
+   "date": "2023-01-25",
+   "count": 3900,
+   "source": "https://www.bloomberg.com/news/articles/2023-01-25/ibm-to-cut-about-3-900-workers-still-hiring-in-higher-growth-areas"
+  }
+ ]
+}

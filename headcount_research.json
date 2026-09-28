@@ -1,0 +1,326 @@
+[
+ {
+  "company": "Amazon",
+  "hq": "Seattle, WA, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000004/amzn-20251231.htm",
+  "fiscal_year": "Calendar year (Dec 31)",
+  "total_employees": 1595000,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://ir.aboutamazon.com/files/doc_earnings/2026/q2/earnings-result/AMZN-Q2-2026-Earnings-Release.pdf",
+  "total_source_type": "primary",
+  "total_definition": "Employees (full-time and part-time; excludes contractors & temporary personnel)",
+  "us_employees": 1000000,
+  "us_qualifier": "more than",
+  "us_as_of": "2025 (page undated; cites 2025 investment data)",
+  "us_source": "https://www.aboutamazon.com/news/policy-news-views/amazons-economic-impact-in-the-us-2025",
+  "us_source_type": "company website",
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": null,
+  "office_countries_source": "https://sustainability.aboutamazon.com/employees",
+  "major_hubs": [],
+  "notes": "FY2025 10-K: 'As of December 31, 2025, we employed approximately 1,576,000 full-time and part-time employees.' US figure is a floor: 'With more than 1 million employees across the country'. India and China headcounts not disclosed. No office-country count stated; sustainability site says '1.5M+ Amazon employees worldwide, with operations in Africa, Asia-Pacific, Europe, Latin America, the Middle East, and North America'.",
+  "verification": "All figures read directly from the cited pages."
+ },
+ {
+  "company": "Infosys",
+  "hq": "Bengaluru, Karnataka, India",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/0001067491/000106749126000038/exv99w07.htm",
+  "fiscal_year": "April 1 - March 31 (Q1 FY27 = quarter ended 2026-06-30)",
+  "total_employees": 328062,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/0001067491/000106749126000038/exv99w04.htm",
+  "total_source_type": "primary",
+  "total_definition": "Total employees (Q1 FY27 fact sheet, Form 6-K Ex. 99.4): S/W professionals 310,039 + Sales & Support 18,023",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [
+   {
+    "label": "Effort Distribution (Consolidated IT Services) - Onsite",
+    "value": 22.8,
+    "unit": "percent of IT-services effort, NOT headcount",
+    "as_of": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/0001067491/000106749126000038/exv99w04.htm"
+   },
+   {
+    "label": "Effort Distribution (Consolidated IT Services) - Offshore",
+    "value": 77.2,
+    "unit": "percent of IT-services effort, NOT headcount",
+    "as_of": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/0001067491/000106749126000038/exv99w04.htm"
+   }
+  ],
+  "office_countries": "59 countries (290 locations)",
+  "office_countries_source": "https://www.infosys.com/investors/reports-filings/documents/global-presence2026.pdf",
+  "major_hubs": [],
+  "notes": "FY-end figure: 328,594 total employees at 2026-03-31 (same fact sheet; also FY2026 Form 20-F https://www.sec.gov/Archives/edgar/data/0001067491/000119312526270520/infy-20260331.htm). US/India/China headcount not disclosed in documents reachable. The 20-F defines 'onsite' as client sites and development centers outside India and 'offshore' as Global Development Centers in India, so the onsite/offshore split is effort share only and must not be shown as headcount. Q1 FY27 press-release boilerplate: 'Over 325,000 of our people' and 'enable businesses in 59 countries' (https://www.sec.gov/Archives/edgar/data/0001067491/000106749126000038/exv99w01.htm). Attrition 13.0% LTM; women 39.6%.",
+  "verification": "Headcount and HQ read directly. '290 locations in 59 countries' and the 20-F onsite/offshore definition came from a search index of the primary documents: infosys.com returned 403, and the 20-F is larger than 10MB, so neither could be fetched directly. The 59-country figure matches the press release, which was read directly."
+ },
+ {
+  "company": "Tata Consultancy Services (TCS)",
+  "hq": "Mumbai, Maharashtra, India",
+  "hq_source": "https://www.ar.tcs.com/files/splits/business-responsibility-and-sustainability-report.pdf",
+  "fiscal_year": "April 1 - March 31 (Q1 FY27 = quarter ended 2026-06-30)",
+  "total_employees": 593798,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.tcs.com/who-we-are/newsroom/press-release/tcs-financial-results-q1-fy-2027",
+  "total_source_type": "primary",
+  "total_definition": "Closing workforce / headcount (Q1 FY27 results)",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [
+   {
+    "label": "North American workforce",
+    "value": 46000,
+    "qualifier": "exceeds",
+    "unit": "associates",
+    "as_of": "2025-03-28",
+    "source": "https://www.tcs.com/who-we-are/newsroom/news-alert/tcs-named-top-employer-in-the-united-states-2025",
+    "mirror": "https://www.3blmedia.com/news/tcs-named-1-top-employer-united-states-2025"
+   }
+  ],
+  "office_countries": "55 countries (BRSR: 185 international offices) / 56 countries (Integrated Report: 194 service delivery centers)",
+  "office_countries_source": "https://www.ar.tcs.com/files/splits/business-responsibility-and-sustainability-report.pdf",
+  "office_breakdown": {
+   "label": "Global plants and offices (BRSR FY2025-26)",
+   "total": 312,
+   "by_region": {
+    "Asia Pacific": 29,
+    "Europe": 60,
+    "India": 127,
+    "Japan": 7,
+    "Latin America": 29,
+    "Middle East and Africa": 16,
+    "North America": 23,
+    "United Kingdom": 21
+   },
+   "source": "https://www.ar.tcs.com/files/splits/business-responsibility-and-sustainability-report.pdf"
+  },
+  "major_hubs": [],
+  "notes": "FY-end figures, read directly: 584,519 permanent employees at 2026-03-31 from 149 nationalities (https://www.ar.tcs.com/integrated-reporting-framework/human-capital/). The BRSR also lists 32,918 'other than permanent' staff, for a total of 617,437. Integrated Report 'About TCS': 'over 580,000 consultants spread across 56 countries and 194 service delivery centers' (https://www.ar.tcs.com/introduction/about-tcs/). The BRSR gives 55 countries and 185 international offices; its entity scope may differ from the group-level Integrated Report. The North America figure is from March 2025 and is a floor ('exceeds'); the release names US bases in New York, Edison NJ, Cincinnati, Santa Clara, Phoenix and Austin. Q1 FY27: net +9,279, LTM IT-services attrition 13.6%, 148 nationalities, women 35%. No country-level (US/India/China) headcount disclosed.",
+  "verification": "tcs.com returned 403 to direct fetch. The 593,798 figure (2026-06-30) came from a search index of the tcs.com release and matches news coverage (e.g. zeebiz.com). Every FY2026 figure and the North America figure were read directly."
+ },
+ {
+  "company": "Cognizant",
+  "hq": "Teaneck, NJ, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm",
+  "fiscal_year": "Calendar year (Dec 31)",
+  "total_employees": 356700,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000030/exhibit9916302026.htm",
+  "total_source_type": "primary",
+  "total_definition": "Total headcount (Q2 2026 earnings release)",
+  "us_employees": null,
+  "india_employees": 256900,
+  "india_as_of": "2025-12-31",
+  "india_source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm",
+  "china_employees": null,
+  "regional_breakdown": [
+   {
+    "label": "India",
+    "value": 256900,
+    "as_of": "2025-12-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm"
+   },
+   {
+    "label": "North America",
+    "value": 41600,
+    "as_of": "2025-12-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm"
+   },
+   {
+    "label": "Continental Europe",
+    "value": 14600,
+    "as_of": "2025-12-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm"
+   },
+   {
+    "label": "United Kingdom",
+    "value": 7800,
+    "as_of": "2025-12-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm"
+   },
+   {
+    "label": "various other locations throughout the rest of the world",
+    "value": 30700,
+    "as_of": "2025-12-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm"
+   }
+  ],
+  "office_countries": "nearly 50 countries (operations in major metro areas)",
+  "office_countries_source": "https://www.sec.gov/Archives/edgar/data/1058290/000105829026000008/ctsh-20251231.htm",
+  "major_hubs": [
+   "Chennai",
+   "Hyderabad",
+   "Pune",
+   "Kolkata",
+   "Bangalore"
+  ],
+  "major_hubs_basis": "Largest delivery-center presence by square feet (10-K Item 2): Chennai 7M sq ft, Hyderabad 3M, Pune 2M, Kolkata 2M, Bangalore 2M",
+  "notes": "10-K: 'approximately 351,600 employees, with 256,900 in India, 41,600 in North America, 14,600 in Continental Europe, 7,800 in the United Kingdom and 30,700 in various other locations' (2025-12-31); the regional parts add up to the total. US is not broken out from 'North America'. 10-K Item 2 also names delivery centers in the United States, Philippines, Canada, Europe and Latin America, and sales/innovation offices in New York, London, Paris, Melbourne and Singapore. Risk factors: 'A substantial portion of our employees in the United States ... rely upon temporary work authorization or work permits', and the principal US subsidiary 'utilizes a high number of skilled workers holding H-1B and L-1 visas'. Q2 2026: -900 QoQ, +12,900 YoY.",
+  "verification": "All figures read directly from sec.gov and the company's 10-K PDF."
+ },
+ {
+  "company": "Alphabet (Google)",
+  "hq": "Mountain View, CA, USA",
+  "hq_source": "https://s206.q4cdn.com/479360582/files/doc_financials/2025/q4/GOOG-10-K-2025.pdf",
+  "fiscal_year": "Calendar year (Dec 31)",
+  "total_employees": 198933,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/0001652044/000165204426000066/googexhibit991q22026.htm",
+  "total_source_type": "primary",
+  "total_definition": "Number of employees (Q2 2026 supplemental information)",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": null,
+  "office_countries_source": "https://s206.q4cdn.com/479360582/files/doc_financials/2025/q4/GOOG-10-K-2025.pdf",
+  "major_hubs": [],
+  "notes": "FY2025 10-K: 'As of December 31, 2025, Alphabet had 190,820 employees' (https://www.sec.gov/Archives/edgar/data/1652044/000165204426000018/goog-20251231.htm). Item 2 does not give a country count, only: 'We own and lease office facilities and data centers around the world, primarily in Asia, Europe, and North America.' about.google/company-info/locations lists offices by region but states no total. No country-level headcount disclosed.",
+  "verification": "All figures read directly."
+ },
+ {
+  "company": "Meta",
+  "hq": "Menlo Park, CA, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm",
+  "fiscal_year": "Calendar year (Dec 31)",
+  "total_employees": 75472,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050596/meta-06302026xexhibit991.htm",
+  "total_source_type": "primary",
+  "total_definition": "Headcount (Q2 2026 earnings release)",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": null,
+  "office_countries_source": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm",
+  "major_hubs": [],
+  "notes": "The June 2026 figure includes about 8,000 employees affected by the May 2026 headcount reduction; Meta says most will drop out of headcount by the end of Q3 2026. FY2025 10-K: 'global workforce of 78,865 employees as of December 31, 2025'. No country count stated; the 10-K says offices in 'more than 90 cities around the world'. No country-level headcount disclosed.",
+  "verification": "All figures read directly."
+ },
+ {
+  "company": "Microsoft",
+  "hq": "Redmond, WA, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm",
+  "fiscal_year": "July 1 - June 30 (FY2026 ended 2026-06-30)",
+  "total_employees": 223000,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm",
+  "total_source_type": "primary",
+  "total_definition": "Approximately 223,000 people on a full-time basis",
+  "us_employees": 121000,
+  "us_as_of": "2026-06-30",
+  "us_source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm",
+  "india_employees": 22000,
+  "india_qualifier": "more than",
+  "india_as_of": "2025-12-09",
+  "india_source": "https://news.microsoft.com/source/asia/2025/12/09/microsoft-invests-us17-5-billion-in-india-to-drive-ai-diffusion-at-population-scale/",
+  "india_source_type": "official press release (Microsoft Source Asia)",
+  "china_employees": null,
+  "regional_breakdown": [
+   {
+    "label": "U.S.",
+    "value": 121000,
+    "as_of": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm"
+   },
+   {
+    "label": "internationally",
+    "value": 102000,
+    "as_of": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm"
+   }
+  ],
+  "office_countries": null,
+  "office_countries_source": "https://www.sec.gov/Archives/edgar/data/0000789019/000119312526323660/msft-20260630.htm",
+  "major_hubs": [
+   "China",
+   "India",
+   "Ireland",
+   "Netherlands",
+   "Sweden"
+  ],
+  "major_hubs_basis": "Countries, not cities: 'largest owned international properties' per FY2026 10-K Item 2. Largest leased international properties: Australia, Canada, China, France, Germany, India, Ireland, Japan, the Netherlands, the United Kingdom.",
+  "notes": "India figure is a floor: 'more than 22,000 employees across Bengaluru, Hyderabad, Pune, Gurugram, Noida and other cities' (Dec 2025). An older, undated Microsoft India page says 'over 20,000 employees ... across 10 Indian cities' (https://www.microsoft.com/en-in/about/contact-us). China headcount not disclosed in a primary document found; a 2022 press report of 'over 9,000' could not be traced to a Microsoft document and is excluded. The 10-K gives no office-country count.",
+  "verification": "Total, US/international split and the India figure were read directly. Item 2 property-country lists came from a search index of the FY2026 10-K, because the fetched copy was truncated before Item 2. Re-check before publishing."
+ },
+ {
+  "company": "Apple",
+  "hq": "Cupertino, CA, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+  "fiscal_year": "Ends last Saturday of September (FY2025 ended 2025-09-27; FY2026 10-K due ~late Oct 2026)",
+  "total_employees": 166000,
+  "total_as_of": "2025-09-27",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/320193/000032019325000079/aapl-20250927.htm",
+  "total_source_type": "primary",
+  "total_definition": "Approximately 166,000 full-time equivalent employees",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": null,
+  "office_countries_source": null,
+  "major_hubs": [],
+  "notes": "Apple does not report headcount quarterly. Stale official figures were excluded: apple.com/job-creation cites 80,000 US employees as of 2016-12-31, and apple.com.cn/job-creation cites 10,000 China employees (page updated March 2018). The 10-K gives no office-country count. Reportable segments are Americas, Europe, Greater China, Japan and Rest of Asia Pacific. Manufacturing is done by outsourcing partners 'primarily in China mainland, India, Japan, South Korea, Taiwan and Vietnam'; these are not Apple employees.",
+  "verification": "All figures read directly."
+ },
+ {
+  "company": "HCLTech",
+  "hq": "Noida, Uttar Pradesh, India",
+  "hq_source": "https://www.prnewswire.com/news-releases/hcltech-delivers-robust-q1-led-by-record-deal-bookings-of-2-4-billion-302824103.html",
+  "fiscal_year": "April 1 - March 31 (Q1 FY27 = quarter ended 2026-06-30)",
+  "total_employees": 223889,
+  "total_as_of": "2026-06-30",
+  "total_source": "https://www.hcltech.com/sites/default/files/documents/investor-reports/HCLTech-Q1-FY27-Investor-Release.pdf",
+  "total_source_type": "primary",
+  "total_definition": "Total headcount (Q1 FY27 investor release)",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": "60 countries",
+  "office_countries_source": "https://www.prnewswire.com/news-releases/hcltech-delivers-robust-q1-led-by-record-deal-bookings-of-2-4-billion-302824103.html",
+  "major_hubs": [],
+  "notes": "The official Q1 FY27 press release (read directly) says: 'home to more than 223,000 people across 60 countries'. Its dateline is 'NEW YORK and NOIDA, India, July 13, 2026'. Search results and news put the figure at 223,889, down 3,292 QoQ from 227,181 at 2026-03-31, but the FY-end figure was not read in a primary document. No country-level headcount disclosed in documents reachable.",
+  "verification": "hcltech.com and nseindia.com timed out on every fetch. The exact 223,889 came from a search index of the investor-release PDF and matches news (peoplematters.in). The '>223,000 / 60 countries' wording was read directly in the official release."
+ },
+ {
+  "company": "IBM",
+  "hq": "Armonk, NY, USA",
+  "hq_source": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000010/ibm-20251231.htm",
+  "fiscal_year": "Calendar year (Dec 31)",
+  "total_employees": 264300,
+  "total_as_of": "2025-12-31",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000010/ibm-20251231_d2.htm",
+  "total_source_type": "primary",
+  "total_definition": "IBM/wholly owned subsidiaries (Human Capital table, 2025 Annual Report / 10-K Exhibit 13)",
+  "us_employees": null,
+  "india_employees": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "workforce_categories": [
+   {
+    "label": "IBM/wholly owned subsidiaries",
+    "value": 264300
+   },
+   {
+    "label": "Less-than-wholly owned subsidiaries",
+    "value": 8700
+   },
+   {
+    "label": "Complementary (approx. FTE of temporary, part-time and limited-term workers)",
+    "value": 13800
+   }
+  ],
+  "office_countries": "more than 175 countries (operates in)",
+  "office_countries_source": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000027/ibmars2025.pdf",
+  "major_hubs": [],
+  "notes": "IBM does not report headcount quarterly, so 2025-12-31 is the latest. Adding all three categories gives 286,800, which some news outlets report as IBM's total; the dashboard should say which definition it uses. 10-K Item 2 (2025-12-31): US facilities about 17M sq ft, outside the US about 22M sq ft; no countries or cities named. No country-level headcount disclosed.",
+  "verification": "All figures read directly."
+ }
+]

@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>US Work Visa Tracker</title>
+<meta name="description" content="H-1B sponsors, where visa holders work, green card priority dates, and a plain-English guide to US work visas. Built from USCIS, Department of Labor and State Department data.">
+<meta property="og:title" content="US Work Visa Tracker">
+<meta property="og:description" content="Who sponsors H-1B visas, where those jobs are, what they pay, and how long the green card line is.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,.10); --wash: #f0efec;
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --good: #006300; --bad: #d03b3b;
+  --m0: #f0efec; --m1: #cde2fb; --m2: #9ec5f4; --m3: #6da7ec; --m4: #3987e5; --m5: #256abf; --m6: #104281;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,.10); --wash: #262624;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --good: #0ca30c; --bad: #e66767;
+    --m0: #2c2c2a; --m1: #104281; --m2: #1c5cab; --m3: #2a78d6; --m4: #5598e7; --m5: #86b6ef; --m6: #cde2fb;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--s1); }
+header { padding: 20px 16px 0; max-width: 1180px; margin: 0 auto; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+.sub { color: var(--ink-2); margin: 0 0 14px; }
+nav { display: flex; flex-wrap: wrap; gap: 0 4px; border-bottom: 1px solid var(--grid); }
+@media (max-width: 500px) { nav button { padding: 8px 9px; } }
+nav button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; font: inherit; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--s1); font-weight: 600; }
+main { max-width: 1180px; margin: 0 auto; padding: 16px; }
+section[hidden] { display: none; }
+h2 { font-size: 19px; margin: 8px 0 6px; }
+h3 { font-size: 16px; margin: 18px 0 6px; }
+.note { color: var(--ink-2); font-size: 13px; }
+.card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
+.tile { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 12px 14px; }
+.tile > b { display: block; font-size: 26px; font-weight: 600; }
+.tile span { color: var(--ink-2); font-size: 13px; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 7px 8px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th { color: var(--ink-2); font-weight: 600; font-size: 12px; vertical-align: bottom; }
+th.sortable { cursor: pointer; }
+th.sortable:hover { color: var(--ink); }
+td { font-variant-numeric: tabular-nums; }
+th:first-child, td:first-child { text-align: left; }
+#emp tr > :first-child:not(.detail) { position: sticky; left: 0; background: var(--surface); }
+#emp tr.row:hover > :first-child, #emp tr.open > :first-child { background: var(--wash); }
+@media (max-width: 500px) { .tile > b { font-size: 21px; } }
+tbody tr.row { cursor: pointer; }
+tbody tr.row:hover, tbody tr.row.open { background: var(--wash); }
+td.detail { white-space: normal; text-align: left; background: var(--surface); padding: 12px 14px 18px; }
+td.detail > .grid2 { position: sticky; left: 14px; }
+.nd { color: var(--muted); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+.kv { display: grid; grid-template-columns: fit-content(45%) 1fr; gap: 2px 12px; font-size: 14px; }
+.kv dt { color: var(--ink-2); }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+ul.plain { list-style: none; padding: 0; margin: 0; }
+ul.plain li { padding: 3px 0; border-bottom: 1px solid var(--grid); display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin: 4px 0; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
+.seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 8px; overflow: hidden; }
+.seg button { background: var(--surface); color: var(--ink-2); border: 0; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--axis); }
+.seg button[aria-pressed="true"] { background: var(--s1); color: #fff; }
+select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); }
+svg text { fill: var(--muted); font-size: 11px; }
+.tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); box-shadow: 0 4px 16px rgba(0,0,0,.15); border-radius: 8px; padding: 8px 10px; font-size: 13px; z-index: 10; display: none; max-width: 260px; }
+.maprow { display: grid; grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr); gap: 16px; }
+@media (max-width: 800px) { .maprow { grid-template-columns: 1fr; } }
+#map svg { width: 100%; height: auto; display: block; }
+#map path.county { stroke: none; }
+#map path.states { fill: none; stroke: var(--surface); stroke-width: .8; }
+#map path.county:hover { stroke: var(--ink); stroke-width: 1; }
+.steps { counter-reset: s; padding: 0; list-style: none; margin: 0; }
+.steps li { counter-increment: s; padding: 6px 0 6px 36px; position: relative; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--s1); color: #fff; font-size: 13px; text-align: center; line-height: 24px; }
+.visas { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
+.visas .card { margin: 0; }
+.visas h3 { margin-top: 0; }
+.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--wash); color: var(--ink-2); margin-left: 6px; font-weight: 400; }
+.cmp td, .cmp th { white-space: normal; text-align: left; vertical-align: top; }
+.up { color: var(--good); } .down { color: var(--bad); }
+ul.news li { display: block; }
+ul.news time { display: block; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+ul.news a { color: var(--ink); text-decoration: none; }
+ul.news a:hover { text-decoration: underline; }
+footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(--ink-2); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>US Work Visa Tracker</h1>
+  <p class="sub">Who sponsors H-1B visas, where those jobs are, what they pay, and how long the green card line is. Built from public USCIS, Department of Labor and State Department data.</p>
+  <p class="note" id="updated" style="margin:-8px 0 12px"></p>
+  <nav role="tablist">
+    <button role="tab" data-tab="employers" aria-selected="true">Employers</button>
+    <button role="tab" data-tab="map">Where they work</button>
+    <button role="tab" data-tab="greencard">Green card wait</button>
+    <button role="tab" data-tab="guide">Visa guide</button>
+    <button role="tab" data-tab="news">News</button>
+  </nav>
+</header>
+
+<main>
+<!-- ============================== EMPLOYERS ============================== -->
+<section id="employers">
+  <div class="tiles" id="tiles"></div>
+  <div class="card">
+    <h2>Top H-1B sponsors</h2>
+    <p class="note">10 of the largest H-1B sponsors. Each company's US legal entities are added together (Amazon files under 5+ names). <b>Click a company for details.</b> Click a column heading to sort.</p>
+    <details class="note" style="margin:0 0 8px"><summary style="cursor:pointer"><b>What do the columns mean?</b></summary><div id="empnotes" style="margin-top:6px"></div></details>
+    <div class="scroll"><table id="emp"></table></div>
+    <p class="note" id="fynote"></p>
+  </div>
+</section>
+
+<!-- ============================== MAP ============================== -->
+<section id="map" hidden>
+  <h2>Where H-1B workers work</h2>
+  <p class="note" id="mapnote"></p>
+  <div class="controls">
+    <label for="mapco">Employer</label>
+    <select id="mapco"><option value="">All employers</option></select>
+  </div>
+  <div class="maprow">
+    <div class="card"><div id="mapsvg">Loading map…</div><div class="legend" id="maplegend"></div><p class="note" style="margin:4px 0 0">Darker = more H-1B job filings. Hover or tap a county for its number.</p></div>
+    <div class="card"><h3 style="margin-top:0" id="toptitle">Top cities</h3><ul class="plain" id="toplist"></ul></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">By state</h3>
+    <div class="scroll"><table id="statetable"></table></div>
+  </div>
+</section>
+
+<!-- ============================== GREEN CARD ============================== -->
+<section id="greencard" hidden>
+  <h2>How long is the green card line?</h2>
+  <div class="card">
+    <h3 style="margin-top:0">How a work-based green card works</h3>
+    <ol class="steps">
+      <li><b>PERM labor certification</b> (Department of Labor). The employer proves no qualified US worker is available for the job. <b>The PERM filing date becomes your priority date</b>, your place in line. EB-1 and EB-2 National Interest Waiver skip PERM; their priority date is the I-140 filing date.</li>
+      <li><b>I-140 immigrant petition</b> (USCIS). The employer petitions for you in a category: EB-1, EB-2 or EB-3.</li>
+      <li><b>Wait for your priority date to be "current"</b> in the monthly <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">Visa Bulletin</a>. Each country can get at most 7% of green cards a year, so people born in India and China wait far longer.</li>
+      <li><b>I-485 adjustment of status</b> (or a consular interview abroad). Approved only once your date is before the <b>Final Action Date</b>. You may <i>file</i> earlier using <b>Dates for Filing</b> in months when USCIS allows it.</li>
+    </ol>
+    <p class="note">Check DOL's current PERM processing times at <a href="https://flag.dol.gov/processingtimes">flag.dol.gov/processingtimes</a>. While you wait, an approved I-140 lets H-1B holders extend past the 6-year limit.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" id="gccat"></div>
+    <div class="seg" id="gctable"></div>
+  </div>
+  <div class="tiles" id="gctiles"></div>
+  <div class="card">
+    <h3 style="margin-top:0" id="gctitle"></h3>
+    <div class="legend" id="gclegend"></div>
+    <div id="gcchart"></div>
+    <p class="note">A line near the diagonal means little or no wait. The gap between a line and its bulletin month is roughly how far behind that queue is. "Current" is drawn on the diagonal; "Unavailable" months are gaps.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0" id="gcnowtitle"></h3>
+    <div class="scroll"><table id="gcnow"></table></div>
+    <p class="note">Current = no wait. Unavailable = no visas left in that category this fiscal year. ▲ moved forward / ▼ moved back since last month's bulletin.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">What the categories mean</h3>
+    <dl class="kv">
+      <dt>EB-1</dt><dd>Priority workers: extraordinary ability, outstanding professors and researchers, multinational managers and executives (EB-1C, a common next step from L-1A).</dd>
+      <dt>EB-2</dt><dd>Advanced degree (master's, or bachelor's + 5 years) or exceptional ability; includes the National Interest Waiver.</dd>
+      <dt>EB-3</dt><dd>Professionals with a bachelor's degree and skilled workers (2+ years' training). Unskilled "other workers" have a separate line.</dd>
+      <dt>F2A</dt><dd>Family: spouses and unmarried children under 21 of green card holders.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============================== GUIDE ============================== -->
+<section id="guide" hidden>
+  <h2>US visa types, explained</h2>
+  <p class="note">A plain-English overview, last reviewed September 2026. Rules change often, so check <a href="https://www.uscis.gov/working-in-the-united-states">USCIS</a> or an immigration attorney before relying on this.</p>
+  <div class="visas">
+    <div class="card"><h3>H-1B <span class="tag">specialty work</span></h3>
+      <p>For jobs that need at least a bachelor's degree in a specific field (software, engineering, finance, medicine…). The employer sponsors you and must pay at least the local prevailing wage.</p>
+      <ul><li>85,000 new visas a year (65,000 + 20,000 for US master's grads), picked by lottery. Universities and non-profit research employers are exempt from the cap.</li>
+      <li>3 years + 3-year extension; longer once a green card process is far enough along.</li>
+      <li>You can change employers: the new employer files a petition and you can start once it's filed.</li>
+      <li>Spouse gets H-4; can work only with an H-4 EAD, which requires an approved I-140 or similar.</li></ul></div>
+    <div class="card"><h3>L-1A <span class="tag">managers</span></h3>
+      <p>For managers and executives transferring from a company's office abroad to its US office.</p>
+      <ul><li>You must have worked for the company abroad for 1 continuous year in the last 3.</li>
+      <li>No cap and no lottery.</li>
+      <li>Up to 7 years (1 year at first for a brand-new US office).</li>
+      <li>Fast path to a green card: EB-1C, with no PERM needed.</li></ul></div>
+    <div class="card"><h3>L-1B <span class="tag">specialized knowledge</span></h3>
+      <p>Like L-1A, but for employees with specialized knowledge of the company's products, processes or systems.</p>
+      <ul><li>Same 1-year-abroad rule; no cap, no lottery.</li>
+      <li>Up to 5 years.</li>
+      <li>Green card usually goes through PERM (EB-2/EB-3).</li></ul></div>
+    <div class="card"><h3>B-1 / B-2 <span class="tag">visitor</span></h3>
+      <p><b>B-1 business</b>: meetings, conferences, negotiating contracts, consulting with colleagues. <b>B-2 tourism</b>: holidays, visiting family, medical treatment. Usually issued together as B-1/B-2.</p>
+      <ul><li><b>No productive work</b> and no US paycheck, even remotely for a US client.</li>
+      <li>Typically admitted for up to 6 months per visit.</li>
+      <li>Visa Waiver (ESTA) countries can visit up to 90 days without a visa.</li></ul></div>
+    <div class="card"><h3>F-1 + OPT <span class="tag">students</span></h3>
+      <p>Student visa. After graduating you can work on OPT for 12 months, plus 24 more months for STEM degrees. It's the most common route into H-1B.</p></div>
+    <div class="card"><h3>O-1 <span class="tag">extraordinary ability</span></h3>
+      <p>For people with sustained national or international acclaim (awards, publications, high pay, critical roles). No cap, no lottery.</p></div>
+    <div class="card"><h3>TN · E-3 · H-1B1 <span class="tag">treaty visas</span></h3>
+      <p><b>TN</b>: Canadians and Mexicans in listed professions (USMCA). <b>E-3</b>: Australians, 10,500 a year. <b>H-1B1</b>: Chile (1,400) and Singapore (5,400). All are H-1B-like but have no lottery.</p></div>
+    <div class="card"><h3>H-4 · L-2 <span class="tag">spouses</span></h3>
+      <p><b>L-2 spouses can work</b> automatically. <b>H-4 spouses</b> need an H-4 EAD, available only once the H-1B holder's green card process reaches an approved I-140 (or certain extensions).</p></div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">H-1B vs L-1: what's the difference?</h3>
+    <div class="scroll"><table class="cmp">
+      <thead><tr><th></th><th>H-1B</th><th>L-1 (A / B)</th></tr></thead>
+      <tbody>
+        <tr><td>Change employers?</td><td><b>Yes</b>: new employer files, you can switch</td><td><b>No</b>: tied to the company that transferred you</td></tr>
+        <tr><td>Lottery / annual cap</td><td>Yes (85,000), wage-weighted since FY2027</td><td><b>No</b></td></tr>
+        <tr><td>Prior work abroad needed</td><td>No</td><td>1 year in the last 3 at an affiliate abroad</td></tr>
+        <tr><td>Education</td><td>Bachelor's in a related field (or equivalent)</td><td>No degree rule; role and experience matter</td></tr>
+        <tr><td>Wage rule</td><td>Must pay the prevailing wage (Labor Condition Application)</td><td>No prevailing-wage filing</td></tr>
+        <tr><td>Maximum stay</td><td>6 years, extendable once green card is in progress</td><td>L-1A 7 years, L-1B 5 years</td></tr>
+        <tr><td>Work for more than one employer</td><td>Yes, with a concurrent H-1B petition</td><td>No</td></tr>
+        <tr><td>Spouse can work</td><td>Only with an H-4 EAD (needs approved I-140)</td><td>Yes, automatically on L-2</td></tr>
+        <tr><td>Green card shortcut</td><td>Usually PERM → EB-2/EB-3</td><td>L-1A managers → EB-1C, no PERM</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <p class="note">For recent rule changes (the H-1B lottery and the $100,000 fee), see <a href="#news">News</a>.</p>
+</section>
+
+<!-- ============================== NEWS ============================== -->
+<section id="news" hidden>
+  <h2>News &amp; updates</h2>
+  <p class="note">Immigration rules change often. Here's how to stay on top of them.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Big changes in 2025–26</h3>
+    <ul>
+      <li><b>Wage-weighted H-1B lottery.</b> Starting with FY2027 (registration in March 2026), higher wage levels get more lottery entries. Registrations fell from 343,981 to 211,600. <a href="https://www.bakerlaw.com/insights/uscis-implements-wagelevel-h1b-lottery/">BakerHostetler</a></li>
+      <li><b>$100,000 H-1B fee.</b> A September 2025 proclamation required it for new H-1B petitions for people outside the US. A federal court vacated it in June 2026, and the appeals court refused to pause that ruling in July 2026. The case is still going. <a href="https://www.cupahr.org/resource/federal-court-vacates-h-1b-visa-fee-policy/">CUPA-HR</a> · <a href="https://www.klaskolaw.com/august-2026-100000-h-1b-fee-blocked-again/">Klasko</a></li>
+    </ul>
+  </div>
+  <div class="card" id="newscard" hidden>
+    <h3 style="margin-top:0">Latest USCIS alerts <span class="note" id="newsmeta"></span></h3>
+    <ul class="plain news" id="newslist"></ul>
+    <p class="note">Updated automatically every day from the <a href="https://www.uscis.gov/newsroom/alerts">USCIS alerts feed</a>. Items tagged <span class="tag" style="margin:0">Work visas</span> mention H-1B, L-1, PERM, green cards, fees or similar.</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Official sources</h3>
+    <ul>
+      <li>H-1B cap season (lottery dates and results): <a href="https://www.uscis.gov/working-in-the-united-states/temporary-workers/h-1b-specialty-occupations/h-1b-cap-season">uscis.gov › H-1B cap season</a></li>
+      <li>Visa Bulletin, published monthly: <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">travel.state.gov › Visa Bulletin</a></li>
+      <li>USCIS: which bulletin chart to use this month: <a href="https://www.uscis.gov/green-card/green-card-processes-and-procedures/visa-availability-priority-dates/adjustment-of-status-filing-charts-from-the-visa-bulletin">uscis.gov › filing charts</a></li>
+      <li>PERM and prevailing wage processing times: <a href="https://flag.dol.gov/processingtimes">flag.dol.gov/processingtimes</a></li>
+      <li>USCIS processing times: <a href="https://egov.uscis.gov/processing-times/">egov.uscis.gov/processing-times</a></li>
+      <li>USCIS email updates, free sign-up: <a href="https://public.govdelivery.com/accounts/USDHSCIS/subscriber/new">public.govdelivery.com</a></li>
+    </ul>
+    <h3>YouTube</h3>
+    <ul>
+      <li>RedBus2US: plain-English visa and green card news: <a href="https://www.youtube.com/@RedBus2US">youtube.com/@RedBus2US</a></li>
+      <li>Reddy Neumann Brown PC: immigration attorneys, frequent H-1B and green card updates: <a href="https://www.youtube.com/@ReddyNeumannPC">youtube.com/@ReddyNeumannPC</a></li>
+      <li>USCIS: the official channel: <a href="https://www.youtube.com/@uscis">youtube.com/@uscis</a></li>
+    </ul>
+    <h3>News sites</h3>
+    <ul>
+      <li>RedBus2US: news, guides and trackers: <a href="https://redbus2us.com/">redbus2us.com</a></li>
+      <li>Fragomen: alerts from a global immigration law firm: <a href="https://www.fragomen.com/insights/index.html">fragomen.com/insights</a></li>
+      <li>Boundless: immigration news and plain-English guides: <a href="https://www.boundless.com/blog">boundless.com/blog</a></li>
+      <li>layoffs.fyi: tech layoffs as they're announced: <a href="https://layoffs.fyi/">layoffs.fyi</a></li>
+    </ul>
+    <h3>Reddit</h3>
+    <ul>
+      <li>r/h1b: <a href="https://www.reddit.com/r/h1b/">reddit.com/r/h1b</a></li>
+      <li>r/USCIS: timelines and case questions: <a href="https://www.reddit.com/r/USCIS/">reddit.com/r/USCIS</a></li>
+      <li>r/immigration: <a href="https://www.reddit.com/r/immigration/">reddit.com/r/immigration</a></li>
+    </ul>
+    <p class="note"><b>Check before you act.</b> Videos and Reddit are great for early news and real experiences, but anyone can post. Confirm anything important on the official pages or with an attorney.</p>
+  </div>
+</section>
+</main>
+
+<footer id="foot"></footer>
+<div class="tip" id="tip"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const fmt = n => n == null ? '—' : Math.round(n).toLocaleString('en-US');
+const money = n => n == null ? '—' : '$' + Math.round(n / 1000) + 'k';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const NS = 'http://www.w3.org/2000/svg';
+const tip = $('#tip');
+function showTip(e, html) { tip.innerHTML = html; tip.style.display = 'block'; const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + 'px'; tip.style.top = Math.max(8, e.clientY - h - 12) + 'px'; }
+function hideTip() { tip.style.display = 'none'; }
+let D;
+
+// ---------- tabs (hash-linked) ----------
+function openTab(id) {
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === id));
+  document.querySelectorAll('main > section').forEach(s => s.hidden = s.id !== id);
+  if (id === 'map' && D) drawMap();
+  if (id === 'greencard' && D) drawGC();
+  if (id === 'news') loadNews();
+}
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => { history.replaceState(null, '', '#' + b.dataset.tab); openTab(b.dataset.tab); });
+
+addEventListener('hashchange', () => D && openTab(location.hash.slice(1) || 'employers'));
+fetch('data.json').then(r => r.json()).then(d => {
+  D = d;
+  renderEmployers();
+  const t = location.hash.slice(1);
+  openTab(['employers', 'map', 'greencard', 'guide', 'news'].includes(t) ? t : 'employers');
+  const U = D.updated, day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  $('#updated').innerHTML = `<b>Updated ${day(U.site)}.</b> Visa bulletin and news refresh automatically every day; employer data is refreshed when USCIS and the Department of Labor publish new quarters.`;
+  $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${U.uscis} (June 30, ${D.uscis_years.at(-1)}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
+  Sources: <a href="https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub">USCIS H-1B Employer Data Hub</a>, <a href="https://www.dol.gov/agencies/eta/foreign-labor/performance">DOL LCA disclosure data</a>, <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">State Department Visa Bulletin</a>, <a href="https://layoffs.fyi/">layoffs.fyi</a> (free to use with attribution) and company annual reports (linked per figure). Not legal advice.`;
+});
+
+// ---------- employers ----------
+const FY = () => D.uscis_years;
+const ym = m => new Date(m.slice(0, 7) + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const period = () => `${ym(D.lca_period[0])} – ${ym(D.lca_period[2])}`;
+const lastFull = () => FY().at(-2);           // latest complete fiscal year
+function layoffSum(c) { return c.layoffs ? c.layoffs.filter(e => e.date >= '2022-01-01').reduce((s, e) => s + (e.count || 0), 0) : null; }
+function hc(c, k) { return c.headcount ? c.headcount[k] : null; }
+let sortKey, sortDir = -1;  // sortKey set once data is loaded
+
+function renderEmployers() {
+  const y = lastFull(), nat = D.uscis_national[y];
+  const top = D.companies.reduce((s, c) => s + (c.uscis[y].approvals || 0), 0);
+  $('#tiles').innerHTML = [
+    [fmt(nat.approvals), `H-1B petitions approved, FY${y}`],
+    [fmt(nat.new), `of them for workers new to H-1B, FY${y}`],
+    [Math.round(100 * top / nat.approvals) + '%', `of approvals went to these 10 companies`],
+    [money(D.lca_national.wage_median), `median salary offered on H-1B job filings, ${period()}`],
+  ].map(([b, s]) => `<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
+  $('#empnotes').innerHTML = `<ul style="margin:0;padding-left:18px">
+    <li><b>FY approvals</b>: H-1B petitions USCIS approved that fiscal year, including new hires, extensions, job changes and amendments. It is <i>not</i> how many H-1B workers the company has; nobody publishes that.</li>
+    <li><b>New H-1B workers</b>: approvals for people starting H-1B employment for the first time (mostly lottery winners).</li>
+    <li><b>Median salary</b>: the middle salary the company offered on its H-1B job filings (Labor Condition Applications) (${period()}).</li>
+    <li><b>Employees</b>: from each company's own annual report or earnings release. <b>n/d</b> = the company doesn't disclose it.</li>
+    <li><b>Laid off since 2022</b>: worldwide job cuts the company announced, as tracked by layoffs.fyi. It covers tech companies only, so the IT services firms show n/d.</li></ul>`;
+  $('#fynote').textContent = `US fiscal years run October to September (FY${lastFull()} = Oct ${lastFull() - 1} – Sep ${lastFull()}). * FY${FY().at(-1)} so far: Oct ${FY().at(-1) - 1} – Jun ${FY().at(-1)}.`;
+  sortKey = 'fy' + lastFull();
+  drawEmpTable();
+}
+
+function empCols() {
+  return [
+    ...FY().map(y => ({ k: 'fy' + y, h: `FY${String(y).slice(2)}${y === FY().at(-1) ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
+    { k: 'new', h: `New H-1B<br>workers FY${String(lastFull()).slice(2)}`, v: c => c.uscis[lastFull()].new || 0, f: fmt },
+    { k: 'wage', h: 'Median<br>salary', v: c => c.lca && c.lca.wage_median, f: money },
+    { k: 'emp', h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
+    { k: 'us', h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
+    { k: 'in', h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
+    { k: 'lay', h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
+  ];
+}
+
+function drawEmpTable() {
+  const cols = empCols(), col = cols.find(c => c.k === sortKey);
+  const rows = [...D.companies].sort((a, b) => sortDir * ((col.v(a) ?? -1) - (col.v(b) ?? -1)));
+  const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">n/d</td>` : `<td>${x.f(v, c)}</td>`; };
+  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable" data-k="${x.k}">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(c => `<tr class="row" data-id="${c.id}"><td><b>${esc(c.name)}</b></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
+  $('#emp').querySelectorAll('th.sortable').forEach(th => th.onclick = () => { sortDir = th.dataset.k === sortKey ? -sortDir : -1; sortKey = th.dataset.k; drawEmpTable(); });
+  $('#emp').querySelectorAll('tr.row').forEach(tr => tr.onclick = () => toggleDetail(tr, cols.length + 1));
+}
+
+function toggleDetail(tr, span) {
+  const open = tr.classList.contains('open');
+  document.querySelectorAll('#emp tr.open').forEach(r => { r.classList.remove('open'); r.nextElementSibling.remove(); });
+  if (open) return;
+  tr.classList.add('open');
+  const c = D.companies.find(x => x.id === tr.dataset.id);
+  const d = document.createElement('tr');
+  d.innerHTML = `<td class="detail" colspan="${span}">${detailHTML(c)}</td>`;
+  tr.after(d);
+  // ponytail: panel sized to the visible scroller at open time; reopen after a big window resize
+  d.querySelector('.grid2').style.width = ($('#emp').parentElement.clientWidth - 28) + 'px';
+  d.querySelector('.bars').append(approvalBars(c));
+  d.querySelector('.tomap').onclick = e => { e.preventDefault(); $('#mapco').value = c.id; history.replaceState(null, '', '#map'); openTab('map'); };
+}
+
+function detailHTML(c) {
+  const L = c.lca, h = c.headcount, src = u => u ? ` <a href="${esc(u)}" title="source">↗</a>` : '';
+  const lvl = L ? ['I', 'II', 'III', 'IV'].map(k => `${k}: ${Math.round(100 * (L.levels[k] || 0) / L.lcas)}%`).join(' · ') + ` · not stated: ${Math.round(100 * (1 - ['I', 'II', 'III', 'IV'].reduce((t, k) => t + (L.levels[k] || 0), 0) / L.lcas))}%` : '';
+  const hcRows = h ? [
+    ['Worldwide', h.total_employees, h.total_source, h.total_as_of],
+    ['United States', h.us_employees, h.us_source, h.us_as_of, h.us_plus], ['India', h.india_employees, h.india_source, h.india_as_of, h.india_plus], ['China', h.china_employees],
+    ...(h.regional_breakdown || []).map(r => [r.label, r.value, r.source, r.as_of, r.plus]),
+  ].map(([k, v, s, asof, plus]) => `<dt>${esc(k)}</dt><dd>${v == null ? '<span class="nd">not disclosed</span>' : fmt(v) + (plus ? '+' : '') + (asof ? ` <span class="nd">(${esc(asof)})</span>` : '') + src(s)}</dd>`).join('') : '<dt></dt><dd class="nd">Headcount research pending.</dd>';
+  const lay = c.layoffs ? c.layoffs.slice(0, 8).map(e => `<li><span>${e.date}</span><span>${e.count ? fmt(e.count) : 'undisclosed'} <a href="${esc(e.source)}">↗</a></span></li>`).join('') : '<li class="nd">Not tracked by layoffs.fyi (it covers tech companies only).</li>';
+  return `<div class="grid2">
+    <div><h3>H-1B approvals by fiscal year</h3><div class="legend"><span><i style="background:var(--s1)"></i>New employment</span><span><i style="background:var(--s2)"></i>Extensions, transfers &amp; amendments</span></div><div class="bars"></div>
+      <p class="note">Filed as: ${c.legal_names.map(esc).join('; ')}</p></div>
+    <div><h3>What the H-1B jobs pay</h3>${L ? `<dl class="kv"><dt>Median offered</dt><dd>${money(L.wage_median)}</dd><dt>Middle half</dt><dd>${money(L.wage_p25)} – ${money(L.wage_p75)}</dd><dt>Wage level</dt><dd>${lvl}</dd><dt>Certified LCAs</dt><dd>${fmt(L.lcas)} (${period()})</dd></dl>
+      <h3>Top roles</h3><ul class="plain">${L.top_titles.map(([t, n]) => `<li><span>${esc(t)}</span><span>${fmt(n)}</span></li>`).join('')}</ul>
+      <h3>Top states <a href="#map" class="tomap" style="font-weight:400;font-size:13px">see on map →</a></h3><ul class="plain">${L.top_states.map(([t, n]) => `<li><span>${esc(t)}</span><span>${fmt(n)}</span></li>`).join('')}</ul>` : '<p class="nd">No certified LCAs this period.</p>'}</div>
+    <div><h3>Employees</h3><dl class="kv">${hcRows}</dl>${h && h.office_countries ? `<p class="note">Offices: ${esc(h.office_countries)}${src(h.office_countries_source)}${h.major_hubs && h.major_hubs.length ? '. Big hubs: ' + h.major_hubs.map(esc).join(', ') : ''}.</p>` : ''}${h && h.notes ? `<p class="note">${esc(h.notes)}</p>` : ''}
+      <h3>Layoffs <span class="note">(layoffs.fyi)</span></h3><ul class="plain">${lay}</ul></div>
+  </div>`;
+}
+
+function approvalBars(c) {
+  const W = 360, H = 170, P = { l: 44, r: 8, t: 10, b: 22 }, ys = FY();
+  const top = Math.max(...ys.map(y => c.uscis[y].approvals || 0)) || 1, mag = 10 ** Math.floor(Math.log10(top / 4)),
+    step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(v => v * 4 >= top), max = step * 4;
+  const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.maxWidth = W + 'px';
+  const bw = (W - P.l - P.r) / ys.length, Y = v => P.t + (H - P.t - P.b) * (1 - v / max);
+  let s = '';
+  for (let i = 0; i <= 4; i++) { const v = step * i, y = Y(v); s += `<line x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}" stroke="var(--grid)"/><text x="${P.l - 6}" y="${y + 4}" text-anchor="end">${v >= 1000 ? Math.round(v / 1000) + 'k' : Math.round(v)}</text>`; }
+  ys.forEach((y, i) => {
+    const u = c.uscis[y], tot = u.approvals || 0, nw = u.new || 0, x = P.l + i * bw + bw * .2, w = bw * .6;
+    // new employment at the base, the rest stacked above with a 2px surface gap
+    s += `<rect x="${x}" y="${Y(nw)}" width="${w}" height="${Y(0) - Y(nw)}" rx="3" fill="var(--s1)"/>`;
+    if (tot > nw) s += `<rect x="${x}" y="${Y(tot)}" width="${w}" height="${Math.max(0, Y(nw) - Y(tot) - 2)}" rx="3" fill="var(--s2)"/>`;
+    s += `<text x="${x + w / 2}" y="${H - 6}" text-anchor="middle">FY${String(y).slice(2)}${i === ys.length - 1 ? '*' : ''}</text>`;
+    s += `<rect class="hit" x="${P.l + i * bw}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent" data-i="${i}"/>`;
+  });
+  svg.innerHTML = s;
+  svg.querySelectorAll('.hit').forEach(r => { const y = ys[r.dataset.i], u = c.uscis[y]; r.onmousemove = e => showTip(e, `<b>FY${y}${y === ys.at(-1) ? ' (Oct–Jun)' : ''}</b><br>Approved: ${fmt(u.approvals)}<br>New employment: ${fmt(u.new)}<br>Denied: ${fmt(u.denials)}`); r.onmouseleave = hideTip; });
+  return svg;
+}
+
+// ---------- map ----------
+const FIPS = { AL: '01', AK: '02', AZ: '04', AR: '05', CA: '06', CO: '08', CT: '09', DE: '10', DC: '11', FL: '12', GA: '13', HI: '15', ID: '16', IL: '17', IN: '18', IA: '19', KS: '20', KY: '21', LA: '22', ME: '23', MD: '24', MA: '25', MI: '26', MN: '27', MS: '28', MO: '29', MT: '30', NE: '31', NV: '32', NH: '33', NJ: '34', NM: '35', NY: '36', NC: '37', ND: '38', OH: '39', OK: '40', OR: '41', PA: '42', RI: '44', SC: '45', SD: '46', TN: '47', TX: '48', UT: '49', VT: '50', VA: '51', WA: '53', WV: '54', WI: '55', WY: '56', PR: '72' };
+// ponytail: name matching, not a FIPS crosswalk. "Fairfax County" and "Fairfax city" share one key; fine at this zoom.
+const cname = s => s.toUpperCase().replace(/\b(COUNTY|PARISH|BOROUGH|CENSUS AREA|MUNICIPALITY|CITY AND|CITY)\b/g, '').replace(/\bSAINT\b/g, 'ST').replace(/[^A-Z]/g, '');
+const BINS = [1, 10, 50, 250, 1000, 5000];
+let atlas, mapReady;
+function loadAtlas() {
+  if (!mapReady) mapReady = Promise.all([
+    import('https://cdn.jsdelivr.net/npm/d3-geo@3/+esm'), import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm'),
+    fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json').then(r => r.json()),
+  ]).then(([geo, topo, us]) => { atlas = { geo, topo, us }; });
+  return mapReady;
+}
+function fillFor(n) { if (!n) return 'var(--m0)'; let i = BINS.findLastIndex(b => n >= b); return `var(--m${i + 1})`; }
+
+async function drawMap() {
+  const sel = $('#mapco');
+  if (sel.options.length === 1) { D.companies.forEach(c => sel.add(new Option(c.name, c.id))); sel.onchange = drawMap; }
+  const c = D.companies.find(x => x.id === sel.value), src = c ? c.lca : D.lca_national;
+  $('#mapnote').innerHTML = `Each certified <b>Labor Condition Application</b> (LCA) is one H-1B job filing at a real worksite, ${period()}. Filings are not the same as hires: some are never used, and one worker can have several.`;
+  try { await loadAtlas(); } catch (e) { $('#mapsvg').textContent = 'Map failed to load. Check your connection and reload.'; return; }
+  const { geo, topo, us } = atlas, path = geo.geoPath();
+  const byKey = {};
+  for (const [k, n] of Object.entries(src.counties)) { const [st, cn] = k.split('|'); const key = FIPS[st] + cname(cn); byKey[key] = (byKey[key] || 0) + n; }
+  const counties = topo.feature(us, us.objects.counties).features;
+  const W = 975, H = 610;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of H-1B job filings by county">`;
+  let matched = 0;
+  for (const f of counties) {
+    const key = f.id.slice(0, 2) + cname(f.properties.name), n = byKey[key] || 0;
+    if (n) { matched += n; delete byKey[key]; }
+    s += `<path class="county" d="${path(f)}" fill="${fillFor(n)}" data-n="${n}" data-name="${esc(f.properties.name)}, ${stateAbbr(f.id.slice(0, 2))}"/>`;
+  }
+  s += `<path class="states" d="${path(topo.mesh(us, us.objects.states, (a, b) => a !== b))}"/></svg>`;
+  $('#mapsvg').innerHTML = s;
+  $('#mapsvg').querySelectorAll('path.county').forEach(p => { p.onmousemove = e => showTip(e, `<b>${p.dataset.name}</b><br>${fmt(+p.dataset.n)} H-1B filings`); p.onmouseleave = hideTip; });
+  const total = Object.values(src.counties).reduce((a, b) => a + b, 0);
+  $('#maplegend').innerHTML = ['0', ...BINS.map((b, i) => BINS[i + 1] ? `${fmt(b)}–${fmt(BINS[i + 1] - 1)}` : `${fmt(b)}+`)].map((l, i) => `<span><i style="background:var(--m${i})"></i>${l}</span>`).join('') + `<span class="nd">${Math.round(100 * matched / total)}% of filings placed on the map</span>`;
+  // side list + state table
+  if (c) {
+    $('#toptitle').textContent = `${c.name}: top states`;
+    $('#toplist').innerHTML = c.lca.top_states.map(([t, n]) => `<li><span>${esc(t)}</span><span>${fmt(n)}</span></li>`).join('');
+  } else {
+    $('#toptitle').textContent = 'Top cities';
+    $('#toplist').innerHTML = D.lca_national.top_cities.slice(0, 15).map(([ci, st, n]) => `<li><span>${esc(ci)}, ${st}</span><span>${fmt(n)}</span></li>`).join('');
+  }
+  const st = Object.entries(D.lca_national.states).sort((a, b) => b[1].lcas - a[1].lcas);
+  $('#statetable').innerHTML = `<thead><tr><th>State</th><th>H-1B filings (all employers)</th><th>Share</th><th>Median salary offered</th></tr></thead><tbody>` +
+    st.slice(0, 20).map(([s, v]) => `<tr><td>${s}</td><td>${fmt(v.lcas)}</td><td>${(100 * v.lcas / D.lca_national.lcas).toFixed(1)}%</td><td>${money(v.wage_median)}</td></tr>`).join('') + '</tbody>';
+}
+function stateAbbr(f) { return Object.keys(FIPS).find(k => FIPS[k] === f) || ''; }
+
+// ---------- news (news.json is rebuilt daily by .github/workflows/refresh.yml) ----------
+let newsLoaded;
+function loadNews() {
+  if (newsLoaded) return; newsLoaded = true;
+  fetch('news.json').then(r => r.ok ? r.json() : Promise.reject()).then(n => {
+    const ok = (n.items || []).filter(i => /^https:\/\/www\.uscis\.gov\//.test(i.url) && /^\d{4}-\d\d-\d\d$/.test(i.date)).slice(0, 10);
+    if (!ok.length) return;
+    const day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    $('#newslist').innerHTML = ok.map(i => `<li><time>${day(i.date)}</time><a href="${esc(i.url)}">${esc(i.title)}</a>${i.hit ? ' <span class="tag">Work visas</span>' : ''}</li>`).join('');
+    $('#newsmeta').textContent = '· checked ' + day(n.updated);
+    $('#newscard').hidden = false;
+  }).catch(() => { /* the links below still work */ });
+}
+
+// ---------- green card ----------
+const AREAS = [['worldwide', 'Rest of world', 's1'], ['india', 'India', 's2'], ['china', 'China', 's3']];
+const ALLAREAS = [['worldwide', 'Rest of world'], ['india', 'India'], ['china', 'China (mainland)'], ['mexico', 'Mexico'], ['philippines', 'Philippines']];
+let gc = { cat: 'EB2', table: 'finalAction' };
+function segs(el, opts, key) {
+  el.innerHTML = opts.map(([v, l]) => `<button data-v="${v}" aria-pressed="${gc[key] === v}">${l}</button>`).join('');
+  el.querySelectorAll('button').forEach(b => b.onclick = () => { gc[key] = b.dataset.v; drawGC(); });
+}
+const monthDate = m => new Date(m + '-01T00:00:00Z');
+const pdDate = (v, m) => v === 'C' ? monthDate(m) : (v && v !== 'U' ? new Date(v + 'T00:00:00Z') : null);
+const pretty = v => v === 'C' ? 'Current' : v === 'U' ? 'Unavailable' : v ? new Date(v + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }) : '—';
+const monthName = m => monthDate(m).toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' });
+
+function drawGC() {
+  segs($('#gccat'), [['EB1', 'EB-1'], ['EB2', 'EB-2'], ['EB3', 'EB-3'], ['F2A', 'F2A']], 'cat');
+  segs($('#gctable'), [['finalAction', 'Final action dates'], ['datesForFiling', 'Dates for filing']], 'table');
+  const B = D.bulletin, months = B.months, last = months.at(-1), ser = B.series[gc.cat][gc.table];
+  const tname = gc.table === 'finalAction' ? 'final action date' : 'date for filing';
+  // tiles: how far behind is each queue in the latest bulletin
+  $('#gctiles').innerHTML = AREAS.map(([a, label]) => {
+    const v = ser[a].at(-1), d = pdDate(v, last);
+    const yrs = d ? (monthDate(last) - d) / 3.156e10 : null;
+    const head = v === 'C' ? 'No wait' : v === 'U' ? 'Paused' : yrs.toFixed(1) + ' years behind';
+    const sub = v === 'C' ? 'the category is "current"' : v === 'U' ? 'no visas left this fiscal year' : 'cutoff ' + pretty(v);
+    return `<div class="tile"><b>${head}</b><span><b>${label}</b>, ${gc.cat.replace(/^EB/, 'EB-')}: ${sub} (${monthName(last)} bulletin)</span></div>`;
+  }).join('');
+  $('#gctitle').textContent = `${gc.cat.replace(/^EB/, 'EB-')} ${tname}s, ${monthName(months[0])} – ${monthName(last)}`;
+  $('#gclegend').innerHTML = AREAS.map(([, l, c]) => `<span><i style="background:var(--${c})"></i>${l}</span>`).join('');
+  lineChart($('#gcchart'), months, AREAS.map(([a, l, c]) => ({ label: l, color: c, raw: ser[a], pts: ser[a].map((v, i) => pdDate(v, months[i])) })));
+  // latest bulletin, all countries, all four categories
+  $('#gcnowtitle').textContent = `${monthName(last)} bulletin: ${tname}s`;
+  const prev = months.length - 2, cats = ['EB1', 'EB2', 'EB3', 'F2A'];
+  const delta = (cur, old) => { const a = pdDate(cur, last), b = pdDate(old, months[prev]); if (!a || !b || cur === old) return ''; const days = Math.round((a - b) / 864e5); return days > 0 ? ` <span class="up">▲${days}d</span>` : ` <span class="down">▼${-days}d</span>`; };
+  $('#gcnow').innerHTML = `<thead><tr><th>Country of birth</th>${cats.map(c => `<th>${c.replace(/^EB/, 'EB-')}</th>`).join('')}</tr></thead><tbody>` +
+    ALLAREAS.map(([a, l]) => `<tr><td>${l}</td>${cats.map(c => { const s = B.series[c][gc.table][a]; return `<td>${pretty(s.at(-1))}${delta(s.at(-1), s[prev])}</td>`; }).join('')}</tr>`).join('') + '</tbody>';
+}
+
+function lineChart(el, months, series) {
+  // ponytail: sized once per draw; switching category redraws, a window resize doesn't
+  const W = Math.max(320, Math.min(900, el.clientWidth || 900)), H = W < 600 ? 260 : 360, P = { l: 44, r: 10, t: 12, b: 26 };
+  const xs = months.map(monthDate), x0 = +xs[0], x1 = +xs.at(-1);
+  const all = series.flatMap(s => s.pts.filter(Boolean).map(Number));
+  const y0 = Math.min(...all), y1 = Math.max(...all);
+  const X = t => P.l + (W - P.l - P.r) * (t - x0) / (x1 - x0), Y = t => P.t + (H - P.t - P.b) * (1 - (t - y0) / (y1 - y0));
+  let s = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="Priority date cutoffs over time">`;
+  const yA = new Date(y0).getUTCFullYear(), yB = new Date(y1).getUTCFullYear();
+  const step = [1, 2, 5, 10].find(v => (yB - yA) / v <= 7) || 20;
+  for (let yr = Math.ceil((yA + 1) / step) * step; yr <= yB; yr += step) { const t = Date.UTC(yr, 0, 1), y = Y(t); s += `<line x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}" stroke="var(--grid)"/><text x="${P.l - 8}" y="${y + 4}" text-anchor="end">${yr}</text>`; }
+  for (let yr = new Date(x0).getUTCFullYear(); yr <= new Date(x1).getUTCFullYear(); yr++) { const t = Date.UTC(yr, 0, 1); if (t < x0 || (W < 600 && yr % 2)) continue; s += `<text x="${X(t)}" y="${H - 8}" text-anchor="middle">${yr}</text>`; }
+  // diagonal = "current" reference
+  const dA = Math.max(x0, y0), dB = Math.min(x1, y1);
+  if (dB > dA) s += `<line x1="${X(dA)}" y1="${Y(dA)}" x2="${X(dB)}" y2="${Y(dB)}" stroke="var(--axis)"/>`;
+  for (const se of series) {
+    let d = '', pen = false;
+    se.pts.forEach((p, i) => { if (!p) { pen = false; return; } d += `${pen ? 'L' : 'M'}${X(+xs[i]).toFixed(1)},${Y(+p).toFixed(1)}`; pen = true; });
+    s += `<path d="${d}" fill="none" stroke="var(--${se.color})" stroke-width="2" stroke-linejoin="round"/>`;
+  }
+  s += `<line class="xh" y1="${P.t}" y2="${H - P.b}" stroke="var(--axis)" visibility="hidden"/>` + series.map((se, j) => `<circle class="dot" data-j="${j}" r="4" fill="var(--${se.color})" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>`).join('');
+  s += `<rect class="hit" x="${P.l}" y="${P.t}" width="${W - P.l - P.r}" height="${H - P.t - P.b}" fill="transparent"/></svg>`;
+  el.innerHTML = s;
+  const svg = el.firstChild, xh = svg.querySelector('.xh'), dots = svg.querySelectorAll('.dot');
+  svg.querySelector('.hit').onmousemove = e => {
+    const r = svg.getBoundingClientRect(), vx = (e.clientX - r.left) * W / r.width;
+    const t = x0 + (vx - P.l) / (W - P.l - P.r) * (x1 - x0);
+    let i = 0; xs.forEach((d, k) => { if (Math.abs(d - t) < Math.abs(xs[i] - t)) i = k; });
+    xh.setAttribute('x1', X(+xs[i])); xh.setAttribute('x2', X(+xs[i])); xh.setAttribute('visibility', 'visible');
+    dots.forEach((dt, j) => { const p = series[j].pts[i]; if (p) { dt.setAttribute('cx', X(+xs[i])); dt.setAttribute('cy', Y(+p)); dt.setAttribute('visibility', 'visible'); } else dt.setAttribute('visibility', 'hidden'); });
+    showTip(e, `<b>${monthName(months[i])} bulletin</b><br>` + series.map(se => `<i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--${se.color})"></i> ${se.label}: ${pretty(se.raw[i])}`).join('<br>'));
+  };
+  svg.querySelector('.hit').onmouseleave = () => { hideTip(); xh.setAttribute('visibility', 'hidden'); dots.forEach(d => d.setAttribute('visibility', 'hidden')); };
+}
+</script>
+</body>
+</html>
