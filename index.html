@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14365c">
 <title>US Work Visa Tracker</title>
 <meta name="description" content="Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is. Free, from USCIS, Department of Labor and State Department data.">
 <link rel="canonical" href="https://danpune.github.io/visa-tracker/">
@@ -19,7 +20,7 @@
 <style>
 :root {
   color-scheme: light;
-  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #6f6d68; --link: #1c5cab;
   --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,.10); --wash: #f0efec;
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --good: #006300; --bad: #d03b3b;
   --m0: #f0efec; --m1: #cde2fb; --m2: #9ec5f4; --m3: #6da7ec; --m4: #3987e5; --m5: #256abf; --m6: #104281;
@@ -27,7 +28,7 @@
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7; --muted: #898781;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7; --muted: #898781; --link: #5598e7;
     --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,.10); --wash: #262624;
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --good: #0ca30c; --bad: #e66767;
     --m0: #2c2c2a; --m1: #104281; --m2: #1c5cab; --m3: #2a78d6; --m4: #5598e7; --m5: #86b6ef; --m6: #cde2fb;
@@ -35,11 +36,15 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-a { color: var(--s1); }
-header { padding: 20px 16px 0; max-width: 1180px; margin: 0 auto; }
-h1 { font-size: 24px; margin: 0 0 4px; }
-.sub { color: var(--ink-2); margin: 0 0 14px; }
+a { color: var(--link); }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+.hero { background: #14365c; color: #fff; padding: 26px 0 22px; }
+h1 { font-size: 26px; margin: 0 0 6px; }
+.sub { color: #dbe5f1; margin: 0 0 8px; font-size: 16px; }
+.updated { color: #b7c8dd; margin: 0; font-size: 13px; }
+nav.wrap { margin-top: 6px; }
 nav { display: flex; flex-wrap: wrap; gap: 0 4px; border-bottom: 1px solid var(--grid); }
+@media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) .hero { background: #0c2340; } }
 @media (max-width: 500px) { nav button { padding: 8px 9px; } }
 nav button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; font: inherit; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
 nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--s1); font-weight: 600; }
@@ -61,6 +66,8 @@ th.sortable { cursor: pointer; }
 th.sortable:hover { color: var(--ink); }
 td { font-variant-numeric: tabular-nums; }
 th:first-child, td:first-child { text-align: left; }
+@media (max-width: 700px) { #emp .wide { display: none; } }
+.phone-only { display: none; } @media (max-width: 700px) { .phone-only { display: block; } }
 #emp tr > :first-child:not(.detail) { position: sticky; left: 0; background: var(--surface); }
 #emp tr.row:hover > :first-child, #emp tr.open > :first-child { background: var(--wash); }
 @media (max-width: 500px) { .tile > b { font-size: 21px; } }
@@ -79,10 +86,10 @@ ul.plain li { padding: 3px 0; border-bottom: 1px solid var(--grid); display: fle
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
 .seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 8px; overflow: hidden; }
-.seg button { background: var(--surface); color: var(--ink-2); border: 0; padding: 6px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+.seg button { background: var(--surface); color: var(--ink-2); border: 0; padding: 6px 12px; min-height: 40px; font: inherit; font-size: 14px; cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--axis); }
-.seg button[aria-pressed="true"] { background: var(--s1); color: #fff; }
-select { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); }
+.seg button[aria-pressed="true"] { background: #1c5cab; color: #fff; }
+select { font: inherit; font-size: 14px; padding: 6px 8px; min-height: 40px; border-radius: 8px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); }
 svg text { fill: var(--muted); font-size: 11px; }
 .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); box-shadow: 0 4px 16px rgba(0,0,0,.15); border-radius: 8px; padding: 8px 10px; font-size: 13px; z-index: 10; display: none; max-width: 260px; }
 .maprow { display: grid; grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr); gap: 16px; }
@@ -114,10 +121,12 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 </head>
 <body>
 <header>
-  <h1>US Work Visa Tracker</h1>
-  <p class="sub">Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is. Built from public USCIS, Department of Labor and State Department data.</p>
-  <p class="note" id="updated" style="margin:-8px 0 12px"></p>
-  <nav role="tablist">
+  <div class="hero"><div class="wrap">
+    <h1>US Work Visa Tracker</h1>
+    <p class="sub">Who sponsors H-1B and L-1 visas, where those jobs are, what they pay, and how long the green card line is.</p>
+    <p class="updated" id="updated"></p>
+  </div></div>
+  <nav role="tablist" class="wrap">
     <button role="tab" data-tab="employers" aria-selected="true">Employers</button>
     <button role="tab" data-tab="l1">L-1 visas</button>
     <button role="tab" data-tab="map">Where they work</button>
@@ -136,6 +145,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <p class="note">10 of the largest H-1B sponsors, plus Dell. Each company's US legal entities are added together (Amazon files under 5+ names). <b>Click a company for details.</b> Click a column heading to sort.</p>
     <details class="note" style="margin:0 0 8px"><summary style="cursor:pointer"><b>What do the columns mean?</b></summary><div id="empnotes" style="margin-top:6px"></div></details>
     <div class="scroll"><table id="emp"></table></div>
+    <p class="note phone-only">On a phone this shows the latest year. Tap a company for every year, employees by country and layoffs.</p>
     <p class="note" id="fynote"></p>
   </div>
 </section>
@@ -349,7 +359,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 <footer>
   <div id="foot"></div>
   <p>This site keeps anonymous totals only: visits, where they came from (such as search or a WhatsApp share) and which tabs get opened. No cookies, no accounts, and nothing about you is stored.</p>
-  <p class="visits" id="visits" hidden>👀 <b id="visitcount">–</b> visits</p>
+  <p class="visits" id="visits" hidden>👀 <b id="visitcount">–</b></p>
 </footer>
 <div class="tip" id="tip"></div>
 
@@ -382,7 +392,7 @@ const once = key => { try { if (sessionStorage.getItem('vt-' + key)) return fals
   const first = once('visit');
   if (first) hit('src-' + src);
   fetch(ABACUS + (first ? 'hit/' : 'get/') + NSP + 'visits').then(r => r.ok ? r.json() : Promise.reject())
-    .then(d => { if (typeof d.value === 'number') { $('#visitcount').textContent = d.value.toLocaleString('en-US'); $('#visits').hidden = false; } })
+    .then(d => { if (typeof d.value === 'number') { $('#visitcount').textContent = d.value.toLocaleString('en-US') + (d.value === 1 ? ' visit' : ' visits'); $('#visits').hidden = false; } })
     .catch(() => { /* the counter is optional; stay hidden */ });
 })();
 
@@ -414,7 +424,7 @@ fetch('data.json').then(r => r.json()).then(d => {
   const t = location.hash.slice(1);
   openTab(['employers', 'l1', 'map', 'greencard', 'guide', 'news'].includes(t) ? t : 'employers');
   const U = D.updated, day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
-  $('#updated').innerHTML = `<b>Updated ${day(U.site)}.</b> Visa bulletin and news refresh automatically every day; employer data is refreshed when USCIS and the Department of Labor publish new quarters.`;
+  $('#updated').innerHTML = `<b>Updated ${day(U.site)}</b> · free, from USCIS, Department of Labor and State Department data · visa bulletin and news refresh daily`;
   $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${U.uscis} (June 30, ${D.uscis_years.slice(-1)[0]}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · L-1: USCIS national reports through ${U.l1_national}, by employer ${U.l1_employer} (latest published), border entries DHS FY2024 · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
   Sources: <a href="https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub">USCIS H-1B Employer Data Hub</a>, <a href="https://www.dol.gov/agencies/eta/foreign-labor/performance">DOL LCA disclosure data</a>, <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">State Department Visa Bulletin</a>, <a href="https://layoffs.fyi/">layoffs.fyi</a> (free to use with attribution) and company annual reports (linked per figure). Not legal advice.`;
 });
@@ -442,8 +452,8 @@ function renderEmployers() {
     <li><b>New H-1B workers</b>: approvals for people starting H-1B employment for the first time (mostly lottery winners).</li>
     <li><b>L-1 FY19</b>: L-1 transfer petitions USCIS approved in FY2019, the last year it published L-1 by employer (see the L-1 tab).</li>
     <li><b>Median salary</b>: the middle salary the company offered on its H-1B job filings (Labor Condition Applications) (${period()}).</li>
-    <li><b>Employees</b>: from each company's own annual report or earnings release. <b>n/d</b> = the company doesn't disclose it.</li>
-    <li><b>Laid off since 2022</b>: worldwide job cuts the company announced, as tracked by layoffs.fyi. It covers tech companies only, so the IT services firms show n/d.</li></ul>`;
+    <li><b>Employees</b>: from each company's own annual report or earnings release. <b>—</b> = the company doesn't disclose it.</li>
+    <li><b>Laid off since 2022</b>: worldwide job cuts the company announced, as tracked by layoffs.fyi. It covers tech companies only, so the IT services firms show —.</li></ul>`;
   $('#fynote').textContent = `US fiscal years run October to September (FY${lastFull()} = Oct ${lastFull() - 1} – Sep ${lastFull()}). * FY${FY().slice(-1)[0]} so far: Oct ${FY().slice(-1)[0] - 1} – Jun ${FY().slice(-1)[0]}. † L-1 by employer is only published up to FY2019.`;
   sortKey = 'fy' + lastFull();
   drawEmpTable();
@@ -451,13 +461,13 @@ function renderEmployers() {
 
 function empCols() {
   return [
-    ...FY().map(y => ({ k: 'fy' + y, h: `FY${String(y).slice(2)}${y === FY().slice(-1)[0] ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
+    ...FY().map(y => ({ k: 'fy' + y, wide: y !== lastFull(), h: `FY${String(y).slice(2)}${y === FY().slice(-1)[0] ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
     { k: 'new', h: `New H-1B<br>workers FY${String(lastFull()).slice(2)}`, v: c => c.uscis[lastFull()].new || 0, f: fmt },
     { k: 'l1', h: 'L-1<br>FY19†', v: c => { const v = c.l1['2019']; return v ? v.total || (v.withheld ? 1 : 0) : 0; }, f: (n, c) => l1Text(c.l1['2019'], true) },
     { k: 'wage', h: 'Median<br>salary', v: c => c.lca && c.lca.wage_median, f: money },
     { k: 'emp', h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
-    { k: 'us', h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
-    { k: 'in', h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
+    { k: 'us', wide: true, h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
+    { k: 'in', wide: true, h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
     { k: 'lay', h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
   ];
 }
@@ -465,9 +475,10 @@ function empCols() {
 function drawEmpTable() {
   const cols = empCols(), col = cols.find(c => c.k === sortKey);
   const rows = [...D.companies].sort((a, b) => sortDir * ((col.v(a) ?? -1) - (col.v(b) ?? -1)));
-  const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">n/d</td>` : `<td>${x.f(v, c)}</td>`; };
-  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable" data-k="${x.k}">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('')}</tr></thead><tbody>` +
-    rows.map(c => `<tr class="row" data-id="${c.id}"><td><b>${esc(c.name)}</b></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
+  const cls = x => x.wide ? ' class="wide"' : '';
+  const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd${x.wide ? ' wide' : ''}" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">—</td>` : `<td${cls(x)}>${x.f(v, c)}</td>`; };
+  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable${x.wide ? ' wide' : ''}" data-k="${x.k}">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('')}</tr></thead><tbody>` +
+    rows.map(c => `<tr class="row" data-id="${c.id}"><td title="${esc(c.name)}"><b>${esc(c.short || c.name)}</b></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
   $('#emp').querySelectorAll('th.sortable').forEach(th => th.onclick = () => { sortDir = th.dataset.k === sortKey ? -sortDir : -1; sortKey = th.dataset.k; drawEmpTable(); });
   $('#emp').querySelectorAll('tr.row').forEach(tr => tr.onclick = () => toggleDetail(tr, cols.length + 1));
 }
