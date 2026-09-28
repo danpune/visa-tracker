@@ -116,7 +116,7 @@ out = {
     "lca_period": [dates[0], dates[len(dates) // 2], dates[-1]],
     "lca_national": nat,
     "companies": [{
-        "id": c["id"], "name": c["name"], "legal_names": c["names"], "l1_names": c.get("l1_names", []),
+        "id": c["id"], "name": c["name"], "legal_names": c["names"], "l1_names": c.get("l1_names", []), "note": c.get("note"),
         "uscis": {y: dict(uscis[c["id"]][y]) for y in YEARS},
         "lca": summarize(lca_by[c["id"]]) if lca_by[c["id"]] else None,
         "layoffs": layoffs.get(c["layoffs"]) if c["layoffs"] else None,

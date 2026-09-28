@@ -259,5 +259,26 @@
   "office_countries_source": "https://www.sec.gov/Archives/edgar/data/51143/000005114326000027/ibmars2025.pdf",
   "major_hubs": [],
   "notes": "IBM and wholly owned subsidiaries. Including smaller subsidiaries and temporary staff gives 286,800."
+ },
+ {
+  "id": "dell",
+  "hq": "Round Rock, TX, USA",
+  "total_employees": 97000,
+  "total_as_of": "2026-01-30",
+  "total_source": "https://www.sec.gov/Archives/edgar/data/1571996/000157199626000008/dell-20260130.htm",
+  "us_employees": null,
+  "us_plus": false,
+  "us_as_of": null,
+  "us_source": null,
+  "india_employees": null,
+  "india_plus": false,
+  "india_as_of": null,
+  "india_source": null,
+  "china_employees": null,
+  "regional_breakdown": [],
+  "office_countries": "operates in over 170 countries",
+  "office_countries_source": "https://www.sec.gov/Archives/edgar/data/1571996/000157199626000008/dell-20260130.htm",
+  "major_hubs": [],
+  "notes": "From Dell's fiscal 2026 annual report (10-K). Dell reports no split by country; its fiscal year ends in late January."
  }
 ]

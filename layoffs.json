@@ -436,5 +436,32 @@
    "count": 3900,
    "source": "https://www.bloomberg.com/news/articles/2023-01-25/ibm-to-cut-about-3-900-workers-still-hiring-in-higher-growth-areas"
   }
+ ],
+ "dell": [
+  {
+   "date": "2026-03-16",
+   "count": 11000,
+   "source": "https://www.reuters.com/business/world-at-work/dell-workforce-drops-10-fiscal-2026-filing-shows-2026-03-16/"
+  },
+  {
+   "date": "2024-08-05",
+   "count": null,
+   "source": "https://siliconangle.com/2024/08/05/dell-lays-off-thousands-workers-sales-reorganization/"
+  },
+  {
+   "date": "2024-03-25",
+   "count": 6000,
+   "source": "https://siliconangle.com/2024/03/25/dell-reduces-global-workforce-around-6000-jobs/"
+  },
+  {
+   "date": "2023-08-07",
+   "count": null,
+   "source": "https://www.crn.com/news/channel-news/dell-confirms-sales-layoffs-as-part-of-new-partner-led-storage-strategy"
+  },
+  {
+   "date": "2023-02-06",
+   "count": 6650,
+   "source": "https://www.bloomberg.com/news/articles/2023-02-06/dell-dell-lays-off-about-6-650-employees-in-latest-tech-cuts"
+  }
  ]
 }

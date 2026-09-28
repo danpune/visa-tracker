@@ -119,7 +119,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
   <div class="tiles" id="tiles"></div>
   <div class="card">
     <h2>Top H-1B sponsors</h2>
-    <p class="note">10 of the largest H-1B sponsors. Each company's US legal entities are added together (Amazon files under 5+ names). <b>Click a company for details.</b> Click a column heading to sort.</p>
+    <p class="note">10 of the largest H-1B sponsors, plus Dell. Each company's US legal entities are added together (Amazon files under 5+ names). <b>Click a company for details.</b> Click a column heading to sort.</p>
     <details class="note" style="margin:0 0 8px"><summary style="cursor:pointer"><b>What do the columns mean?</b></summary><div id="empnotes" style="margin-top:6px"></div></details>
     <div class="scroll"><table id="emp"></table></div>
     <p class="note" id="fynote"></p>
@@ -147,6 +147,9 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <div class="card"><h3 style="margin-top:0">Where they're headed, FY2024</h3><p class="note">By US state of destination.</p><ul class="plain" id="l1to"></ul></div>
   </div>
   <p class="note" style="margin-top:-4px">Border entries, not people: someone who crosses often counts every time, which is why Canada and Mexico rank high. Source: <a href="https://ohss.dhs.gov/topics/immigration/yearbook/2024/NIsupptable1">DHS Yearbook of Immigration Statistics 2024</a>, rounded to the nearest 10.</p>
+  <div class="card"><h3 style="margin-top:0">L-1 approvals for the companies on this site, FY2015–FY2019</h3>
+    <p class="note">All US entities added together. "+" means some small counts were hidden by USCIS; "&lt;50" means five entities each had fewer than 10.</p>
+    <div class="scroll"><table id="l1co"></table></div></div>
   <div class="card"><h3 style="margin-top:0">Biggest L-1 users, FY2019</h3>
     <p class="note">The last year USCIS published L-1 approvals by employer. Companies in bold have all their US entities added together, like the rest of this site; other names are shown as filed.</p>
     <ul class="plain" id="l1top" style="max-width:560px"></ul></div>
@@ -378,7 +381,7 @@ function renderEmployers() {
   $('#tiles').innerHTML = [
     [fmt(nat.approvals), `H-1B petitions approved, FY${y}`],
     [fmt(nat.new), `of them for workers new to H-1B, FY${y}`],
-    [Math.round(100 * top / nat.approvals) + '%', `of approvals went to these 10 companies`],
+    [Math.round(100 * top / nat.approvals) + '%', `of approvals went to these ${D.companies.length} companies`],
     [money(D.lca_national.wage_median), `median salary offered on H-1B job filings, ${period()}`],
   ].map(([b, s]) => `<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
   $('#empnotes').innerHTML = `<ul style="margin:0;padding-left:18px">
@@ -443,7 +446,7 @@ function detailHTML(c) {
   const lay = c.layoffs ? c.layoffs.slice(0, 8).map(e => `<li><span>${e.date}</span><span>${e.count ? fmt(e.count) : 'undisclosed'} <a href="${esc(e.source)}">↗</a></span></li>`).join('') : '<li class="nd">Not tracked by layoffs.fyi (it covers tech companies only).</li>';
   return `<div class="grid2">
     <div><h3>H-1B approvals by fiscal year</h3><div class="legend"><span><i style="background:var(--s1)"></i>New employment</span><span><i style="background:var(--s2)"></i>Extensions, transfers &amp; amendments</span></div><div class="bars"></div>
-      <p class="note">Filed as: ${c.legal_names.map(esc).join('; ')}</p>
+      <p class="note">${c.note ? esc(c.note) + ' ' : ''}Filed as: ${c.legal_names.map(esc).join('; ')}</p>
       <h3>L-1 approvals, FY2015–FY2019</h3><div class="legend"><span><i style="background:var(--s1)"></i>L-1A managers</span><span><i style="background:var(--s2)"></i>L-1B specialized knowledge</span><span><i style="background:var(--muted)"></i>Not split out</span></div><div class="l1bars"></div>
       <p class="note">The latest employer-level L-1 data USCIS has published. "+" means some small counts were hidden by USCIS. <a href="#l1">About L-1 data →</a></p></div>
     <div><h3>What the H-1B jobs pay</h3>${L ? `<dl class="kv"><dt>Median offered</dt><dd>${money(L.wage_median)}</dd><dt>Middle half</dt><dd>${money(L.wage_p25)} – ${money(L.wage_p75)}</dd><dt>Wage level</dt><dd>${lvl}</dd><dt>Certified LCAs</dt><dd>${fmt(L.lcas)} (${period()})</dd></dl>
@@ -455,7 +458,7 @@ function detailHTML(c) {
 }
 
 // Stacked bars: series[0] at the base, each later series stacked above with a 2px surface gap.
-function stackBars(labels, series, tip, fitTo, maxW = 360) {
+function stackBars(labels, series, tip, fitTo, maxW = 360, marks = []) {  // marks: text drawn at the base of an empty bar
   const W = Math.max(280, Math.min(maxW, (fitTo && fitTo.clientWidth) || maxW)), H = Math.round(W * .47), P = { l: 44, r: 8, t: 10, b: 22 };
   const sums = labels.map((_, i) => series.reduce((t, se) => t + (se.values[i] || 0), 0));
   const top = Math.max(...sums) || 1, mag = 10 ** Math.floor(Math.log10(top / 4)),
@@ -474,6 +477,7 @@ function stackBars(labels, series, tip, fitTo, maxW = 360) {
       base += v;
     });
     s += `<text x="${x + w / 2}" y="${H - 6}" text-anchor="middle">${bw < 34 ? lab.replace('FY', "'") : lab}</text>`;  // narrow bars: FY17 -> '17
+    if (marks[i]) s += `<text x="${x + w / 2}" y="${Y(0) - 6}" text-anchor="middle">${marks[i]}</text>`;
     s += `<rect class="hit" x="${P.l + i * bw}" y="${P.t}" width="${bw}" height="${H - P.t - P.b}" fill="transparent" data-i="${i}"/>`;
   });
   svg.innerHTML = s;
@@ -493,10 +497,11 @@ const L1Y = ['2015', '2016', '2017', '2018', '2019'];
 function l1Bars(c, fitTo) {
   const v = y => c.l1[y] || {}, rest = y => Math.max(0, (v(y).total || 0) - (v(y).l1a || 0) - (v(y).l1b || 0));
   return stackBars(L1Y.map(y => fyLabel(y)), [{ color: 's1', values: L1Y.map(y => v(y).l1a) }, { color: 's2', values: L1Y.map(y => v(y).l1b) }, { color: 'muted', values: L1Y.map(rest) }],
-    i => { const y = L1Y[i]; return `<b>FY${y}</b><br>L-1 approved: ${l1Text(v(y))}<br>L-1A (managers): ${fmt(v(y).l1a || 0)}<br>L-1B (specialized knowledge): ${fmt(v(y).l1b || 0)}${rest(y) ? `<br>Not split out by USCIS: ${fmt(rest(y))}` : ''}`; }, fitTo);
+    i => { const y = L1Y[i]; return `<b>FY${y}</b><br>L-1 approved: ${l1Text(v(y))}<br>L-1A (managers): ${fmt(v(y).l1a || 0)}<br>L-1B (specialized knowledge): ${fmt(v(y).l1b || 0)}${rest(y) ? `<br>Not split out by USCIS: ${fmt(rest(y))}` : ''}${!v(y).total && v(y).withheld ? `<br>USCIS hid the counts for ${v(y).withheld} filing entit${v(y).withheld > 1 ? 'ies' : 'y'} (each under 10)` : ''}`; }, fitTo, 360,
+    L1Y.map(y => !v(y).total && v(y).withheld ? l1Text(v(y), true) : ''));
 }
 // USCIS hides counts under 10 ("D"); an entity with only hidden rows shows as "<10", otherwise the total is a slight undercount.
-function l1Text(v, short) { return !v || (!v.total && !v.withheld) ? '0' : !v.total ? (short ? '<10' : 'fewer than 10') : fmt(v.total) + (v.withheld ? '+' : ''); }
+function l1Text(v, short) { return !v || (!v.total && !v.withheld) ? '0' : !v.total ? (short ? '<' : 'fewer than ') + 10 * v.withheld : fmt(v.total) + (v.withheld ? '+' : ''); }
 
 // ---------- L-1 ----------
 let l1Drawn;
@@ -522,6 +527,11 @@ function drawL1() {
     <tr><td><b>USCIS petitions approved</b></td><td>${fmt(l1Full + bl(full))} (FY${full})</td><td>Employer petitions, including extensions: L-1A ${fmt(ap('l1a', full))}, L-1B ${fmt(ap('l1b', full))}, blanket ${fmt(bl(full))}. Workers who come under a company's blanket approval aren't counted one by one.</td></tr>
     <tr><td><b>L-1 visas issued</b></td><td>about 71,800 (FY2024)</td><td>Visas stamped at US consulates abroad, including blanket-L workers. Canadians don't need a visa. <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-statistics/nonimmigrant-visa-statistics.html">State Department</a> · <a href="https://usafacts.org/explainers/what-is-a-visa/visa-category/l-1/">USAFacts</a></td></tr>
     <tr><td><b>Border entries</b></td><td>${fmt(E.total)} (FY2024)</td><td>Every arrival on L-1 status (I-94 records), so frequent travelers count many times. <a href="https://ohss.dhs.gov/topics/immigration/yearbook/2024/NIsupptable1">DHS</a></td></tr></tbody>`;
+  $('#l1co').innerHTML = `<thead><tr><th>Company</th>${L1Y.map(y => `<th>FY${y.slice(2)}</th>`).join('')}<th>L-1A share</th></tr></thead><tbody>` +
+    [...D.companies].sort((a, b) => ((b.l1['2019'] || {}).total || 0) - ((a.l1['2019'] || {}).total || 0)).map(c => {
+      const sum = k => L1Y.reduce((t, y) => t + ((c.l1[y] || {})[k] || 0), 0), share = sum('l1a') + sum('l1b') ? Math.round(100 * sum('l1a') / (sum('l1a') + sum('l1b'))) + '%' : '—';
+      return `<tr><td><b>${esc(c.name)}</b></td>${L1Y.map(y => `<td>${l1Text(c.l1[y], true)}</td>`).join('')}<td>${share}</td></tr>`;
+    }).join('') + '</tbody>';
   const li = ([n, v]) => `<li><span>${esc(n)}</span><span>${fmt(v)}</span></li>`;
   $('#l1from').innerHTML = E.countries.map(li).join('');
   $('#l1to').innerHTML = E.states.map(li).join('');
