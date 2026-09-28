@@ -123,7 +123,7 @@ out = {
         "headcount": headcount.get(c["id"]),
         "l1": l1_per.get(c["id"], {}),
     } for c in companies],
-    "l1": {"employer_totals": l1_totals, "top_2019": l1_top, "national": l1_nat},
+    "l1": {"employer_totals": l1_totals, "top_2019": l1_top, "national": l1_nat, "entries": l1.entries()},
     "bulletin": bulletin,
     # when each source was last pulled; shown on the page so readers can judge freshness
     "updated": {"site": datetime.now(timezone.utc).date().isoformat(), "uscis": f"FY{YEARS[-1]} Q3", "lca": dates[-1],

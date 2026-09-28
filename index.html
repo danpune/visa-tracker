@@ -137,8 +137,16 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
       <div id="l1bars"></div><p class="note" id="l1barsnote"></p></div>
     <div class="card"><h3 style="margin-top:0">How often petitions are denied</h3>
       <div class="scroll"><table id="l1rates"></table></div>
-      <p class="note">Share of decided petitions that were denied. L-1B denials were high from 2018 to 2021 and have fallen sharply since.</p></div>
+      <p class="note">Denied ÷ (approved + denied), first decisions only. L-1B denials were high from 2018 to 2021 and have fallen sharply since.</p></div>
   </div>
+  <div class="card"><h3 style="margin-top:0">Three ways L-1 gets counted</h3>
+    <p class="note">Other sites often mix these up. They measure different things, so they differ a lot.</p>
+    <div class="scroll"><table class="cmp" id="l1counts"></table></div></div>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">Where L-1 entries come from, FY2024</h3><p class="note">By country of citizenship.</p><ul class="plain" id="l1from"></ul></div>
+    <div class="card"><h3 style="margin-top:0">Where they're headed, FY2024</h3><p class="note">By US state of destination.</p><ul class="plain" id="l1to"></ul></div>
+  </div>
+  <p class="note" style="margin-top:-4px">Border entries, not people: someone who crosses often counts every time, which is why Canada and Mexico rank high. Source: <a href="https://ohss.dhs.gov/topics/immigration/yearbook/2024/NIsupptable1">DHS Yearbook of Immigration Statistics 2024</a>, rounded to the nearest 10.</p>
   <div class="card"><h3 style="margin-top:0">Biggest L-1 users, FY2019</h3>
     <p class="note">The last year USCIS published L-1 approvals by employer. Companies in bold have all their US entities added together, like the rest of this site; other names are shown as filed.</p>
     <ul class="plain" id="l1top" style="max-width:560px"></ul></div>
@@ -147,7 +155,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
       <li><b>No Department of Labor filing.</b> H-1B employers must file a public Labor Condition Application with the salary and worksite. L-1 has none, so there are no public L-1 salaries or work locations.</li>
       <li><b>Employer-level data stopped after FY2019.</b> USCIS published "Approved L-1 Petitions by Employer" for FY2015–FY2019 only. Newer company numbers would need a Freedom of Information Act request.</li>
       <li><b>"Blanket L" workers don't show up here.</b> Big multinationals can get a blanket approval, after which each employee applies directly at a US consulate abroad. Those transfers never reach USCIS, so these counts understate L-1 use at large firms, especially IT services companies.</li>
-      <li><b>Approvals include extensions</b>, not just new transfers, just like the H-1B numbers.</li>
+      <li><b>Approvals include extensions</b>, not just new transfers. In FY2019, 58% of approved L-1 petitions were extensions, employer changes or amendments, and 42% were new (<a href="https://www.uscis.gov/sites/default/files/document/reports/1-L1Report_Report_02-26-20_DO_cleared.pdf">USCIS</a>).</li>
     </ul></div>
 </section>
 
@@ -351,7 +359,7 @@ fetch('data.json').then(r => r.json()).then(d => {
   openTab(['employers', 'l1', 'map', 'greencard', 'guide', 'news'].includes(t) ? t : 'employers');
   const U = D.updated, day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
   $('#updated').innerHTML = `<b>Updated ${day(U.site)}.</b> Visa bulletin and news refresh automatically every day; employer data is refreshed when USCIS and the Department of Labor publish new quarters.`;
-  $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${U.uscis} (June 30, ${D.uscis_years.slice(-1)[0]}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · L-1: USCIS national reports through ${U.l1_national}, by employer ${U.l1_employer} (latest published) · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
+  $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${U.uscis} (June 30, ${D.uscis_years.slice(-1)[0]}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · L-1: USCIS national reports through ${U.l1_national}, by employer ${U.l1_employer} (latest published), border entries DHS FY2024 · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
   Sources: <a href="https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub">USCIS H-1B Employer Data Hub</a>, <a href="https://www.dol.gov/agencies/eta/foreign-labor/performance">DOL LCA disclosure data</a>, <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">State Department Visa Bulletin</a>, <a href="https://layoffs.fyi/">layoffs.fyi</a> (free to use with attribution) and company annual reports (linked per figure). Not legal advice.`;
 });
 
@@ -509,6 +517,14 @@ function drawL1() {
   const pct = v => v == null ? '—' : v.toFixed(1) + '%';
   $('#l1rates').innerHTML = `<thead><tr><th>Fiscal year</th><th>L-1A</th><th>L-1B</th><th>H-1B</th></tr></thead><tbody>` +
     ys.map(y => `<tr><td>FY${y}${y === last ? '*' : ''}</td><td>${pct(rate('l1a', y))}</td><td>${pct(rate('l1b', y))}</td><td>${pct(rate('h1b', y))}</td></tr>`).join('') + '</tbody>';
+  const E = D.l1.entries, bl = y => ap('blanket', y);
+  $('#l1counts').innerHTML = `<thead><tr><th>Count</th><th>Latest</th><th>What it measures</th></tr></thead><tbody>
+    <tr><td><b>USCIS petitions approved</b></td><td>${fmt(l1Full + bl(full))} (FY${full})</td><td>Employer petitions, including extensions: L-1A ${fmt(ap('l1a', full))}, L-1B ${fmt(ap('l1b', full))}, blanket ${fmt(bl(full))}. Workers who come under a company's blanket approval aren't counted one by one.</td></tr>
+    <tr><td><b>L-1 visas issued</b></td><td>about 71,800 (FY2024)</td><td>Visas stamped at US consulates abroad, including blanket-L workers. Canadians don't need a visa. <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-statistics/nonimmigrant-visa-statistics.html">State Department</a> · <a href="https://usafacts.org/explainers/what-is-a-visa/visa-category/l-1/">USAFacts</a></td></tr>
+    <tr><td><b>Border entries</b></td><td>${fmt(E.total)} (FY2024)</td><td>Every arrival on L-1 status (I-94 records), so frequent travelers count many times. <a href="https://ohss.dhs.gov/topics/immigration/yearbook/2024/NIsupptable1">DHS</a></td></tr></tbody>`;
+  const li = ([n, v]) => `<li><span>${esc(n)}</span><span>${fmt(v)}</span></li>`;
+  $('#l1from').innerHTML = E.countries.map(li).join('');
+  $('#l1to').innerHTML = E.states.map(li).join('');
   // "@id" = one of our companies with all its US entities added up; anything else is a single filer name as USCIS lists it
   $('#l1top').innerHTML = D.l1.top_2019.map(([n, v]) => {
     const co = n[0] === '@' && D.companies.find(c => c.id === n.slice(1));

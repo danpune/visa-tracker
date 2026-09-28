@@ -99,6 +99,24 @@ def national():
     return {k: {fy: dict(v) for fy, v in sorted(d.items())} for k, d in out.items()}
 
 
+def entries():
+    """DHS yearbook FY2024 I-94 L-1 admissions: total, top countries of citizenship, top destination states.
+    Admissions are arrival events, not people (frequent border crossers count many times); cells rounded to 10."""
+    pretty = {"China, People's Republic": "China", "Korea, South": "South Korea"}
+    out = {}
+    for name, rows in _sheets("raw/l1/ohss_yearbook_ni_fy2024.xlsx"):
+        key = {"NISuppTable1": "countries", "NISuppTable3": "states"}.get(name)
+        if not key:
+            continue
+        hdr = next(r for r in rows if r and r[0].strip() == "Class")
+        l1 = next(r for r in rows if r and r[0].strip() == "L1")
+        out["total"] = _num(l1[2])
+        vals = [(re.sub(r"\d+$", "", h).strip(), _num(v)) for h, v in zip(hdr[3:], l1[3:]) if _num(v)]
+        vals = [(pretty.get(n, n), v) for n, v in vals if n not in ("Unknown", "Total")]
+        out[key] = sorted(vals, key=lambda x: -x[1])[:8]
+    return out
+
+
 if __name__ == "__main__":  # self-check against totals USCIS prints in its own files
     import json
     nat = national()
@@ -112,3 +130,6 @@ if __name__ == "__main__":  # self-check against totals USCIS prints in its own 
     for cid, ys in per.items():
         print(cid, {fy: (s["total"], s.get("withheld", 0), s.get("l1a", 0), s.get("l1b", 0)) for fy, s in sorted(ys.items())})
     print(totals, top[:8])
+    e = entries()
+    assert e["total"] == 598330 and e["countries"][0] == ("Canada", 156760) and e["states"][0] == ("Texas", 94530), e
+    print(e)
