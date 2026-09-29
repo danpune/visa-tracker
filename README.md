@@ -1,4 +1,6 @@
-# US Work Visa Tracker (prototype)
+# US Work Visa Tracker
+
+Live at https://danpune.github.io/visa-tracker/
 
 H-1B sponsors, where H-1B jobs are, what they pay, green card priority dates, and a plain-English visa guide.
 Static site: `index.html` + `data.json`. No build tools, no API keys.
