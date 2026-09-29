@@ -1,6 +1,13 @@
 {
- "updated": "2026-09-28",
+ "updated": "2026-09-29",
  "items": [
+  {
+   "title": "USCIS Adjusts EB-5 Fees to Cover Program Costs and Strengthen Integrity Measures",
+   "url": "https://www.uscis.gov/newsroom/alerts/uscis-adjusts-eb-5-fees-to-cover-program-costs-and-strengthen-integrity-measures",
+   "date": "2026-09-29",
+   "source": "USCIS alert",
+   "hit": true
+  },
   {
    "title": "USCIS Reaches H-2B Cap for First Half of FY 2027",
    "url": "https://www.uscis.gov/newsroom/alerts/uscis-reaches-h-2b-cap-for-first-half-of-fy-2027",
@@ -63,13 +70,6 @@
    "date": "2026-08-05",
    "source": "USCIS alert",
    "hit": false
-  },
-  {
-   "title": "USCIS Reaches Fiscal Year 2027 H-1B Cap",
-   "url": "https://www.uscis.gov/newsroom/alerts/uscis-reaches-fiscal-year-2027-h-1b-cap",
-   "date": "2026-07-17",
-   "source": "USCIS alert",
-   "hit": true
   }
  ]
 }
