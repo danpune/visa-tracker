@@ -28,8 +28,8 @@ Then `python3 build.py` → `data.json` and `employers.json` (it asserts the dat
 
 - **Approvals ≠ H-1B employees.** Nobody publishes a company's current H-1B headcount. USCIS approvals include extensions and transfers of existing workers.
 - **LCA filings ≠ hires.** Maps and salaries use certified LCAs (filings), counted once each. `TOTAL_WORKER_POSITIONS` is ignored for geography: blanket LCAs (Qualcomm files ~42k "positions" in San Diego) would swamp the map.
-- **Legal entity roll-up is an explicit allow-list** in `companies.json`. Fuzzy matching pulls in unrelated firms ("Platinum Infosys Inc", "HCL Global Systems Inc").
-- **FY2026 is partial** (USCIS through Q3, LCAs through June 2026).
+- **Legal entity roll-up is an explicit allow-list** in `companies.json`. Fuzzy matching pulls in unrelated firms ("Platinum Infosys Inc", "HCL Global Systems Inc"). Companies a parent owns today (LinkedIn, Waymo, Red Hat, Zoox…) are included for all five years and listed in each company's `note`; sold or spun-off units (VMware, Kyndryl, Undead Labs…) are left out.
+- **FY2026 is partial** (USCIS through Q3, LCAs through June 2026). When new USCIS files land, update `USCIS_THROUGH`/`L1_THROUGH` in `build.py`; the build fails if they aren't a quarter end in the latest fiscal year.
 - The Visa Guide carries dated legal content ("last reviewed September 2026"): the $100k H-1B fee litigation and the wage-weighted lottery will keep changing.
 
 ## Link preview and visit counts

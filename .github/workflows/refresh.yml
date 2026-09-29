@@ -12,14 +12,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      # each step may fail on its own (feed down); the other still commits
-      - run: python3 update_news.py
+      - uses: actions/checkout@v5
+      # each refresh may fail on its own (feed down, stale bulletin); the other still gets committed
+      - id: news
+        run: python3 update_news.py
         continue-on-error: true
-      - run: python3 bulletin.py
+      - id: bulletin
+        run: python3 bulletin.py
         continue-on-error: true
-      - run: |
+      - name: Commit if the files are valid JSON
+        run: |
+          python3 -c "import json; json.load(open('news.json')); json.load(open('data.json'))"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add news.json data.json
           git diff --cached --quiet || (git commit -m "Refresh news and visa bulletin" && git push)
+      - name: Fail the run if a refresh step failed (so GitHub emails the owner)
+        if: steps.news.outcome == 'failure' || steps.bulletin.outcome == 'failure'
+        run: exit 1

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Build news.json from USCIS alerts (stdlib only). Adapted from danpune/greencard-checklist; run daily by .github/workflows/refresh.yml."""
-import json, re, sys, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, sys, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -47,4 +47,6 @@ try:
         new["updated"] = old["updated"]  # no churn commits when nothing changed
 except (OSError, ValueError):
     pass
-json.dump(new, open("news.json", "w"), indent=1, ensure_ascii=False)
+with open("news.json.tmp", "w") as f:
+    json.dump(new, f, indent=1, ensure_ascii=False)
+os.replace("news.json.tmp", "news.json")  # atomic write

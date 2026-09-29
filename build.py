@@ -7,11 +7,17 @@ Inputs (raw/ is gitignored, see README for where each comes from):
   companies.json, layoffs.json, headcount.json (hand-curated, sourced)
 """
 import csv, glob, json, re, statistics
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from bulletin import shape
 import l1
 from collections import Counter, defaultdict
+
+# Last day covered by the newest raw files; update these when you drop in a new quarter.
+# The page derives every "Q3", "Oct–Jun" and "partial year" label from them.
+USCIS_THROUGH = "2026-06-30"   # H-1B Employer Data Hub export (FY2026 Q3)
+L1_THROUGH = "2026-06-30"      # USCIS quarterly I-129 workbook (FY2026 Q3)
 
 YEARS = sorted(int(re.search(r"(\d{4})", f).group(1)) for f in glob.glob("raw/uscis_*.csv"))
 PER_YEAR = {"Year": 1, "Hour": 2080, "Week": 52, "Bi-Weekly": 26, "Month": 12}
@@ -174,9 +180,9 @@ out = {
     "bulletin": bulletin,
     "employer_count": len(emp_rows),
     # when each source was last pulled; shown on the page so readers can judge freshness
-    "updated": {"site": datetime.now(timezone.utc).date().isoformat(), "uscis": f"FY{YEARS[-1]} Q3", "lca": dates[-1],
+    "updated": {"site": datetime.now(ZoneInfo("America/New_York")).date().isoformat(), "uscis_through": USCIS_THROUGH, "lca": dates[-1],
                 "bulletin": months[-1], "layoffs": "2026-09-27", "headcount": "2026-09-27",
-                "l1_national": f"FY{max(l1_nat['l1a'])} Q3", "l1_employer": f"FY{max(l1_totals)}"},
+                "l1_through": L1_THROUGH, "l1_employer": f"FY{max(l1_totals)}"},
 }
 json.dump(out, open("data.json", "w"), separators=(",", ":"))
 print(f"FY{YEARS[0]}-{YEARS[-1]}; LCA {len(lca_all)} certified H-1B ({dates[0]}..{dates[-1]}); "
@@ -193,6 +199,9 @@ assert 50_000 < nat["wage_median"] < 250_000, "median wage looks wrong (unit par
 assert l1_nat["h1b"][YEARS[-1]]["approved"] == national[YEARS[-1]]["approvals"], "I-129 workbook and Employer Data Hub disagree on H-1B"
 assert l1_per["tcs"][2019]["total"] == 1542, "L-1 employer parse changed"
 ec = {r[0]: r for r in emp_rows}
+fy_of = lambda d: int(d[:4]) + (d[5:7] >= "10")
+for d, last in ((USCIS_THROUGH, YEARS[-1]), (L1_THROUGH, max(l1_nat["l1a"]))):
+    assert d[5:] in ("12-31", "03-31", "06-30", "09-30") and fy_of(d) == last, f"{d} must be a quarter end in FY{last}: update USCIS_THROUGH/L1_THROUGH"
 assert len(emp_rows) > 100_000, "employers.json lost most employers"
 assert ec["Amazon.com Services LLC"][-1] == "amazon" and ec["Amazon.com Services LLC"][2 + YEARS.index(2026)] == 9337, "USCIS dashboard shows 9,337 for Amazon.com Services LLC FY2026"
 for y in YEARS:

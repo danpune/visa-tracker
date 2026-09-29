@@ -64,13 +64,18 @@ table { border-collapse: collapse; width: 100%; font-size: 14px; }
 th, td { padding: 7px 7px; text-align: right; border-bottom: 1px solid var(--grid); white-space: nowrap; }
 th { color: var(--ink-2); font-weight: 600; font-size: 12px; vertical-align: bottom; }
 th.sortable { cursor: pointer; }
+.rowbtn, .sortbtn { background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer; text-align: inherit; }
+.rowbtn { font-weight: 700; text-align: left; }
+.rowbtn:focus-visible, .sortbtn:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 3px; }
+a.src { display: inline-block; padding: 2px 5px; margin: -2px -2px -2px 0; text-decoration: none; }
+.sticky1 tr > :first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
 th.sortable:hover { color: var(--ink); }
 td { font-variant-numeric: tabular-nums; }
 th:first-child, td:first-child { text-align: left; }
 @media (max-width: 700px) { #emp .wide, #emptable .wide { display: none; } }
 .search { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; min-height: 44px; border-radius: 10px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); margin: 6px 0 4px; }
 #emptable td:first-child { white-space: normal; min-width: 140px; }
-@media (max-width: 500px) { #emptable th, #emptable td { padding: 7px 5px; } }
+@media (max-width: 500px) { #emptable th, #emptable td, #emp th, #emp td { padding: 7px 5px; } }
 #emptable .st { color: var(--muted); font-size: 12px; margin-left: 4px; }
 .phone-only { display: none; } @media (max-width: 700px) { .phone-only { display: block; } }
 #emp tr > :first-child:not(.detail) { position: sticky; left: 0; background: var(--surface); }
@@ -105,7 +110,7 @@ svg text { fill: var(--muted); font-size: 11px; }
 #map path.county:hover { stroke: var(--ink); stroke-width: 1; }
 .steps { counter-reset: s; padding: 0; list-style: none; margin: 0; }
 .steps li { counter-increment: s; padding: 6px 0 6px 36px; position: relative; }
-.steps li::before { content: counter(s); position: absolute; left: 0; top: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--s1); color: #fff; font-size: 13px; text-align: center; line-height: 24px; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 6px; width: 24px; height: 24px; border-radius: 50%; background: #1c5cab; color: #fff; font-size: 13px; text-align: center; line-height: 24px; }
 .visas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 12px; }
 .visas .card { margin: 0; }
 .visas h3 { margin-top: 0; }
@@ -132,30 +137,30 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <p class="updated" id="updated"></p>
   </div></div>
   <nav role="tablist" class="wrap">
-    <button role="tab" data-tab="employers" aria-selected="true">Employers</button>
-    <button role="tab" data-tab="l1">L-1 visas</button>
-    <button role="tab" data-tab="map">Where they work</button>
-    <button role="tab" data-tab="greencard">Green card wait</button>
-    <button role="tab" data-tab="guide">Visa guide</button>
-    <button role="tab" data-tab="news">News</button>
+    <button role="tab" data-tab="employers" aria-controls="employers" aria-selected="true">Employers</button>
+    <button role="tab" data-tab="l1" aria-controls="l1">L-1 visas</button>
+    <button role="tab" data-tab="map" aria-controls="map">Where they work</button>
+    <button role="tab" data-tab="greencard" aria-controls="greencard">Green card wait</button>
+    <button role="tab" data-tab="guide" aria-controls="guide">Visa guide</button>
+    <button role="tab" data-tab="news" aria-controls="news">News</button>
   </nav>
 </header>
 
 <main>
 <!-- ============================== EMPLOYERS ============================== -->
-<section id="employers">
+<section id="employers" role="tabpanel">
   <div class="tiles" id="tiles"></div>
   <div class="card">
     <h2>Top H-1B sponsors</h2>
-    <p class="note">10 of the largest H-1B sponsors, plus Dell. Each company's US legal entities are added together (Amazon files under 5+ names). <b>Click a company for details.</b> Click a column heading to sort.</p>
+    <p class="note">11 large H-1B sponsors from tech and IT services. Each company's US entities and the companies it owns today are added together, so Microsoft includes LinkedIn and Google includes all of Alphabet. <b>Click a company for details.</b> Click a column heading to sort.</p>
     <details class="note" style="margin:0 0 8px"><summary style="cursor:pointer"><b>What do the columns mean?</b></summary><div id="empnotes" style="margin-top:6px"></div></details>
     <div class="scroll"><table id="emp"></table></div>
-    <p class="note phone-only">On a phone this shows the latest year. Tap a company for every year, employees by country and layoffs.</p>
+    <p class="note phone-only">On a phone this shows the latest year, new workers and salary. Tap a company for every year, L-1, employees and layoffs.</p>
     <p class="note" id="fynote"></p>
   </div>
   <div class="card" id="allemp">
     <h2>Search every H-1B sponsor</h2>
-    <p class="note">All <b id="empcount">126,325</b> companies with at least one H-1B approval from FY2022 to FY2026, named as filed. Each legal entity is listed on its own here; the table above adds them up for its 11 companies. <span id="empperiod"></span></p>
+    <p class="note">All <b id="empcount">126,325</b> companies with at least one H-1B approval from FY2022 to FY2026, named as filed. Each legal entity is listed on its own here; the table above adds them up, with subsidiaries, for its 11 companies. <span id="empperiod"></span></p>
     <input type="search" id="empq" class="search" placeholder="Type a company name, e.g. Deloitte" autocomplete="off" aria-label="Search every H-1B sponsor by name">
     <p class="note" id="empstatus" role="status">Tap the box to load the full list (about 2 MB).</p>
     <div class="scroll"><table id="emptable"></table></div>
@@ -164,7 +169,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 </section>
 
 <!-- ============================== L-1 ============================== -->
-<section id="l1" hidden>
+<section id="l1" role="tabpanel" hidden>
   <h2>L-1 visas: moving staff from an office abroad</h2>
   <p class="note">L-1 lets a multinational transfer an employee from its office abroad to its US office: <b>L-1A</b> for managers and executives, <b>L-1B</b> for staff with specialized knowledge of the company. There's no lottery, no annual cap and no wage filing, which is also why far less L-1 data is public. See the <a href="#guide">Visa guide</a> for how L-1 compares with H-1B.</p>
   <div class="tiles" id="l1tiles"></div>
@@ -186,7 +191,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
   <p class="note" style="margin-top:-4px">Border entries, not people: someone who crosses often counts every time, which is why Canada and Mexico rank high. Source: <a href="https://ohss.dhs.gov/topics/immigration/yearbook/2024/NIsupptable1">DHS Yearbook of Immigration Statistics 2024</a>, rounded to the nearest 10.</p>
   <div class="card"><h3 style="margin-top:0">L-1 approvals for the companies on this site, FY2015–FY2019</h3>
     <p class="note">All US entities added together. "+" means some small counts were hidden by USCIS; "&lt;50" means five entities each had fewer than 10.</p>
-    <div class="scroll"><table id="l1co"></table></div></div>
+    <div class="scroll"><table id="l1co" class="sticky1"></table></div></div>
   <div class="card"><h3 style="margin-top:0">Biggest L-1 users, FY2019</h3>
     <p class="note">The last year USCIS published L-1 approvals by employer. Companies in bold have all their US entities added together, like the rest of this site; other names are shown as filed.</p>
     <ul class="plain" id="l1top" style="max-width:560px"></ul></div>
@@ -200,7 +205,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 </section>
 
 <!-- ============================== MAP ============================== -->
-<section id="map" hidden>
+<section id="map" role="tabpanel" hidden>
   <h2>Where H-1B workers work</h2>
   <p class="note" id="mapnote"></p>
   <div class="controls">
@@ -213,12 +218,12 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
   </div>
   <div class="card">
     <h3 style="margin-top:0">By state</h3>
-    <div class="scroll"><table id="statetable"></table></div>
+    <div class="scroll"><table id="statetable" class="sticky1"></table></div>
   </div>
 </section>
 
 <!-- ============================== GREEN CARD ============================== -->
-<section id="greencard" hidden>
+<section id="greencard" role="tabpanel" hidden>
   <h2>How long is the green card line?</h2>
   <div class="card">
     <h3 style="margin-top:0">How a work-based green card works</h3>
@@ -235,6 +240,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <div class="seg" id="gctable"></div>
   </div>
   <div class="tiles" id="gctiles"></div>
+  <p class="note" style="margin-top:-4px">"Years behind" is how far the cutoff date lags the bulletin month, not how long you will wait. For India and China, someone filing today will likely wait much longer, because many people are already in line ahead of them.</p>
   <div class="card">
     <h3 style="margin-top:0" id="gctitle"></h3>
     <div class="legend" id="gclegend"></div>
@@ -243,7 +249,8 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
   </div>
   <div class="card">
     <h3 style="margin-top:0" id="gcnowtitle"></h3>
-    <div class="scroll"><table id="gcnow"></table></div>
+    <div class="scroll"><table id="gcnow" class="sticky1"></table></div>
+    <p class="note phone-only">Swipe the table sideways to see every category.</p>
     <p class="note">Current = no wait. Unavailable = no visas left in that category this fiscal year. ▲ moved forward / ▼ moved back since last month's bulletin.</p>
   </div>
   <div class="card">
@@ -258,15 +265,16 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 </section>
 
 <!-- ============================== GUIDE ============================== -->
-<section id="guide" hidden>
+<section id="guide" role="tabpanel" hidden>
   <h2>US visa types, explained</h2>
-  <p class="note">A plain-English overview, last reviewed September 2026. Rules change often, so check <a href="https://www.uscis.gov/working-in-the-united-states">USCIS</a> or an immigration attorney before relying on this.</p>
+  <p class="note">A plain-English overview, last reviewed Sep 28, 2026. Rules change often, so check <a href="https://www.uscis.gov/working-in-the-united-states">USCIS</a> or an immigration attorney before relying on this.</p>
   <div class="visas">
     <div class="card"><h3>H-1B <span class="tag">specialty work</span></h3>
       <p>For jobs that need at least a bachelor's degree in a specific field (software, engineering, finance, medicine…). The employer sponsors you and must pay at least the local prevailing wage.</p>
       <ul><li>85,000 new visas a year (65,000 + 20,000 for US master's grads), picked by lottery. Universities and non-profit research employers are exempt from the cap.</li>
       <li>3 years + 3-year extension; longer once a green card process is far enough along.</li>
       <li>You can change employers: the new employer files a petition and you can start once it's filed.</li>
+      <li>If you lose your job, you currently have up to 60 days (or until your I-94 expires, if sooner) to find a new sponsor or change status. DHS has proposed ending this grace period (see <a href="#news">News</a>).</li>
       <li>Spouse gets H-4; can work only with an H-4 EAD, which requires an approved I-140 or similar.</li></ul></div>
     <div class="card"><h3>L-1A <span class="tag">managers</span></h3>
       <p>For managers and executives transferring from a company's office abroad to its US office.</p>
@@ -312,18 +320,21 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     </table></div>
   </div>
 
-  <p class="note">For recent rule changes (the H-1B lottery and the $100,000 fee), see <a href="#news">News</a>.</p>
+  <p class="note">For recent and proposed rule changes (the H-1B lottery, the $100,000 payment, a layoffs order and proposed new fees), see <a href="#news">News</a>.</p>
 </section>
 
 <!-- ============================== NEWS ============================== -->
-<section id="news" hidden>
+<section id="news" role="tabpanel" hidden>
   <h2>News &amp; updates</h2>
   <p class="note">Immigration rules change often. Here's how to stay on top of them.</p>
   <div class="card">
-    <h3 style="margin-top:0">Big changes in 2025–26</h3>
+    <h3 style="margin-top:0">Big changes in 2025–26 <span class="note">· checked Sep 28, 2026 against the Federal Register and USCIS</span></h3>
     <ul>
-      <li><b>Wage-weighted H-1B lottery.</b> Starting with FY2027 (registration in March 2026), higher wage levels get more lottery entries. Registrations fell from 343,981 to 211,600. <a href="https://www.bakerlaw.com/insights/uscis-implements-wagelevel-h1b-lottery/">BakerHostetler</a></li>
-      <li><b>$100,000 H-1B fee.</b> A September 2025 proclamation required it for new H-1B petitions for people outside the US. A federal court vacated it in June 2026, and the appeals court refused to pause that ruling in July 2026. The case is still going. <a href="https://www.cupahr.org/resource/federal-court-vacates-h-1b-visa-fee-policy/">CUPA-HR</a> · <a href="https://www.klaskolaw.com/august-2026-100000-h-1b-fee-blocked-again/">Klasko</a></li>
+      <li><b>Wage-weighted H-1B lottery</b> <span class="tag">in effect</span> Since the FY2027 lottery in March 2026, each registration is entered one to four times depending on the wage offered (top wage level four times, lowest once), so higher-paid jobs have better odds. USCIS says registrations fell 38.5%, from 343,981 to about 211,600. <a href="https://www.federalregister.gov/documents/2025/12/29/2025-23853/weighted-selection-process-for-registrants-and-petitioners-seeking-to-file-cap-subject-h-1b">Final rule</a> · <a href="https://x.com/USCIS/status/2057561453373399339">USCIS</a></li>
+      <li><b>$100,000 payment for some new H-1B petitions</b> <span class="tag">not being collected</span> A September 2025 proclamation requires it for certain new petitions for people outside the US, and a Sept 18, 2026 proclamation extended it to Sept 21, 2027. But a federal court struck down USCIS's guidance for collecting it in June 2026, the appeals court refused to pause that ruling, and USCIS says it is following the ruling while the case continues. DHS says it will start collecting if the ruling is lifted. <a href="https://www.uscis.gov/working-in-the-united-states/h-1b-specialty-occupations">USCIS</a> · <a href="https://www.federalregister.gov/documents/2026/09/23/2026-19554/restriction-on-entry-of-certain-nonimmigrant-workers">Proclamation</a></li>
+      <li><b>Layoffs may count against H-1B sponsors</b> <span class="tag">ordered</span> An executive order signed Sept 18, 2026 tells the Labor, Homeland Security and State departments to consider whether an employer had layoffs in the past year, or plans layoffs that hurt similar US workers, when they review its H-1B filings. No agency has published rules or guidance on how it will apply this yet. The order also tells the Labor Department to start reviewing employers' past H-1B wage filings by mid-October 2026. <a href="https://www.federalregister.gov/documents/2026/09/23/2026-19555/enhancing-program-integrity-and-interagency-coordination-in-the-administration-of-the-h-1b">Executive order 14431</a></li>
+      <li><b>Proposed $103,265 fee on capped <span style="white-space:nowrap">H-1B</span> petitions</b> <span class="tag">proposed</span> DHS has proposed an extra fee on every H-1B petition that counts against the annual cap, including the master's-degree cap. Universities and nonprofit or government research employers would not pay it. Public comments closed Sept 24, 2026; it is not final. <a href="https://www.federalregister.gov/documents/2026/08/25/2026-17324/fee-for-certain-h-1b-petitions">Proposed rule</a></li>
+      <li><b>Proposed end of the 60-day grace period</b> <span class="tag">proposed</span> Today, H-1B, L-1, O-1, TN, E-3 and similar workers who lose their job have up to 60 days (or until their I-94 expires, if sooner) to find a new sponsor or change status. DHS has proposed removing that, so they would be out of status the day after the job ends. Comments are open until Nov 10, 2026; it is not final. <a href="https://www.federalregister.gov/documents/2026/09/11/2026-18631/eliminating-the-discretionary-60-day-grace-period">Proposed rule</a></li>
     </ul>
   </div>
   <div class="card" id="newscard" hidden>
@@ -430,23 +441,30 @@ function openTab(id) {
 }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => { history.replaceState(null, '', '#' + b.dataset.tab); openTab(b.dataset.tab); });
 
-addEventListener('hashchange', () => D && openTab(location.hash.slice(1) || 'employers'));
-fetch('data.json').then(r => r.json()).then(d => {
+const TABS = ['employers', 'l1', 'map', 'greencard', 'guide', 'news'];
+addEventListener('hashchange', () => { const t = location.hash.slice(1); if (D) openTab(TABS.includes(t) ? t : 'employers'); });
+fetch('data.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
   D = d;
   renderEmployers();
   const t = location.hash.slice(1);
-  openTab(['employers', 'l1', 'map', 'greencard', 'guide', 'news'].includes(t) ? t : 'employers');
+  openTab(TABS.includes(t) ? t : 'employers');
   const U = D.updated, day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
   $('#updated').innerHTML = `<b>Updated ${day(U.site)}</b> · free, from USCIS, Department of Labor and State Department data · visa bulletin and news refresh daily`;
-  $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${U.uscis} (June 30, ${D.uscis_years.slice(-1)[0]}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · L-1: USCIS national reports through ${U.l1_national}, by employer ${U.l1_employer} (latest published), border entries DHS FY2024 · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
+  $('#foot').innerHTML = `<b>Data as of:</b> H-1B approvals: USCIS through ${fyq('uscis_through')} (${day(U.uscis_through)}) · salaries &amp; worksites: DOL filings through ${day(U.lca)} · visa bulletin: ${monthName(U.bulletin)} · L-1: USCIS national reports through ${fyq('l1_through')}, by employer ${U.l1_employer} (latest published), border entries DHS FY2024 · layoffs: ${day(U.layoffs)} · employee counts: company reports, checked ${day(U.headcount)}.<br>
   Sources: <a href="https://www.uscis.gov/tools/reports-and-studies/h-1b-employer-data-hub">USCIS H-1B Employer Data Hub</a>, <a href="https://www.dol.gov/agencies/eta/foreign-labor/performance">DOL LCA disclosure data</a>, <a href="https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin.html">State Department Visa Bulletin</a>, <a href="https://layoffs.fyi/">layoffs.fyi</a> (free to use with attribution) and company annual reports (linked per figure). Not legal advice.`;
-});
+}, e => { console.error(e); $('#tiles').innerHTML = `<p class="note">Couldn't load the data. Check your connection and reload the page.</p>`; });
 
 // ---------- employers ----------
 const FY = () => D.uscis_years;
 const ym = m => new Date(m.slice(0, 7) + '-01T00:00:00Z').toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 const period = () => `${ym(D.lca_period[0])} – ${ym(D.lca_period[2])}`;
-const lastFull = () => FY().slice(-2)[0];           // latest complete fiscal year
+// "data through" dates come from the build; a fiscal year is partial until its September data is in
+const thru = k => new Date(D.updated[k] + 'T00:00:00Z');
+const partialFY = k => thru(k).getUTCMonth() !== 8;
+const soFar = k => 'Oct–' + thru(k).toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' });
+const fyq = k => { const d = thru(k), m = d.getUTCMonth(); return `FY${d.getUTCFullYear() + (m >= 9 ? 1 : 0)} Q${{ 11: 1, 2: 2, 5: 3, 8: 4 }[m] || '?'}`; };
+const isPartial = y => +y === +FY().slice(-1)[0] && partialFY('uscis_through');
+const lastFull = () => partialFY('uscis_through') ? FY().slice(-2)[0] : FY().slice(-1)[0];  // latest complete fiscal year
 function layoffSum(c) { return c.layoffs ? c.layoffs.filter(e => e.date >= '2022-01-01').reduce((s, e) => s + (e.count || 0), 0) : null; }
 function hc(c, k) { return c.headcount ? c.headcount[k] : null; }
 let sortKey, sortDir = -1;  // sortKey set once data is loaded
@@ -467,9 +485,9 @@ function renderEmployers() {
     <li><b>Median salary</b>: the middle salary the company offered on its H-1B job filings (Labor Condition Applications) (${period()}).</li>
     <li><b>Employees</b>: from each company's own annual report or earnings release. <b>—</b> = the company doesn't disclose it.</li>
     <li><b>Laid off since 2022</b>: worldwide job cuts the company announced, as tracked by layoffs.fyi. It covers tech companies only, so the IT services firms show —.</li></ul>`;
-  $('#fynote').textContent = `US fiscal years run October to September (FY${lastFull()} = Oct ${lastFull() - 1} – Sep ${lastFull()}). * FY${FY().slice(-1)[0]} so far: Oct ${FY().slice(-1)[0] - 1} – Jun ${FY().slice(-1)[0]}. † L-1 by employer is only published up to FY2019.`;
+  $('#fynote').textContent = `US fiscal years run October to September (FY${lastFull()} = Oct ${lastFull() - 1} – Sep ${lastFull()}). ${partialFY('uscis_through') ? `* FY${FY().slice(-1)[0]} so far: ${soFar('uscis_through')}.` : ''} † L-1 by employer is only published up to FY2019.`;
   if (D.employer_count) $('#empcount').textContent = fmt(D.employer_count);
-  $('#empperiod').textContent = `* FY${FY().slice(-1)[0]} so far (Oct–Jun). H-1B filings and median salary come from Department of Labor filings, ${period()}.`;
+  $('#empperiod').textContent = `${partialFY('uscis_through') ? `* FY${FY().slice(-1)[0]} so far (${soFar('uscis_through')}). ` : ''}H-1B filings and median salary come from Department of Labor filings, ${period()}.`;
   if (EMP) drawEmp();
   sortKey = 'fy' + lastFull();
   drawEmpTable();
@@ -477,33 +495,36 @@ function renderEmployers() {
 
 function empCols() {
   return [
-    ...FY().map(y => ({ k: 'fy' + y, wide: y !== lastFull(), h: `FY${String(y).slice(2)}${y === FY().slice(-1)[0] ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
+    ...FY().map(y => ({ k: 'fy' + y, wide: y !== lastFull(), h: `FY${String(y).slice(2)}${isPartial(y) ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
     { k: 'new', h: `New H-1B<br>workers FY${String(lastFull()).slice(2)}`, v: c => c.uscis[lastFull()].new || 0, f: fmt },
-    { k: 'l1', h: 'L-1<br>FY19†', v: c => { const v = c.l1['2019']; return v ? v.total || (v.withheld ? 1 : 0) : 0; }, f: (n, c) => l1Text(c.l1['2019'], true) },
+    { k: 'l1', wide: true, h: 'L-1<br>FY19†', v: c => { const v = c.l1['2019']; return v ? v.total || (v.withheld ? 1 : 0) : 0; }, f: (n, c) => l1Text(c.l1['2019'], true) },
     { k: 'wage', h: 'Median<br>salary', v: c => c.lca && c.lca.wage_median, f: money },
-    { k: 'emp', h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
+    { k: 'emp', wide: true, h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
     { k: 'us', wide: true, h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
     { k: 'in', wide: true, h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
-    { k: 'lay', h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
+    { k: 'lay', wide: true, h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
   ];
 }
 
 function drawEmpTable() {
   const cols = empCols(), col = cols.find(c => c.k === sortKey);
-  const rows = [...D.companies].sort((a, b) => sortDir * ((col.v(a) ?? -1) - (col.v(b) ?? -1)));
+  const rows = [...D.companies].sort((a, b) => { const va = col.v(a), vb = col.v(b);  // missing values always last
+    return va == null ? (vb == null ? 0 : 1) : vb == null ? -1 : sortDir * (va - vb); });
   const cls = x => x.wide ? ' class="wide"' : '';
   const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd${x.wide ? ' wide' : ''}" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">—</td>` : `<td${cls(x)}>${x.f(v, c)}</td>`; };
-  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable${x.wide ? ' wide' : ''}" data-k="${x.k}">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</th>`).join('')}</tr></thead><tbody>` +
-    rows.map(c => `<tr class="row" data-id="${c.id}"><td title="${esc(c.name)}"><b>${esc(c.short || c.name)}</b></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
-  $('#emp').querySelectorAll('th.sortable').forEach(th => th.onclick = () => { sortDir = th.dataset.k === sortKey ? -sortDir : -1; sortKey = th.dataset.k; drawEmpTable(); });
+  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable${x.wide ? ' wide' : ''}" data-k="${x.k}" aria-sort="${x.k === sortKey ? (sortDir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" class="sortbtn">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</button></th>`).join('')}</tr></thead><tbody>` +
+    rows.map(c => `<tr class="row" data-id="${c.id}"><td title="${esc(c.name)}"><button type="button" class="rowbtn" aria-expanded="false">${esc(c.short || c.name)}</button></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
+  $('#emp').querySelectorAll('th.sortable').forEach(th => th.onclick = () => { sortDir = th.dataset.k === sortKey ? -sortDir : -1; sortKey = th.dataset.k; drawEmpTable(); $(`#emp th[data-k="${sortKey}"] .sortbtn`).focus(); });
   $('#emp').querySelectorAll('tr.row').forEach(tr => tr.onclick = () => toggleDetail(tr, cols.length + 1));
 }
 
 function toggleDetail(tr, span) {
   const open = tr.classList.contains('open');
   document.querySelectorAll('#emp tr.open').forEach(r => { r.classList.remove('open'); r.nextElementSibling.remove(); });
+  document.querySelectorAll('#emp .rowbtn').forEach(b => b.setAttribute('aria-expanded', 'false'));
   if (open) return;
   tr.classList.add('open');
+  tr.querySelector('.rowbtn').setAttribute('aria-expanded', 'true');
   const c = D.companies.find(x => x.id === tr.dataset.id);
   const d = document.createElement('tr');
   d.innerHTML = `<td class="detail" colspan="${span}">${detailHTML(c)}</td>`;
@@ -516,17 +537,17 @@ function toggleDetail(tr, span) {
 }
 
 function detailHTML(c) {
-  const L = c.lca, h = c.headcount, src = u => u ? ` <a href="${esc(u)}" title="source">↗</a>` : '';
+  const L = c.lca, h = c.headcount, src = u => u ? ` <a class="src" href="${esc(u)}" title="Source" aria-label="Source">↗</a>` : '';
   const lvl = L ? ['I', 'II', 'III', 'IV'].map(k => `${k}: ${Math.round(100 * (L.levels[k] || 0) / L.lcas)}%`).join(' · ') + ` · not stated: ${Math.round(100 * (1 - ['I', 'II', 'III', 'IV'].reduce((t, k) => t + (L.levels[k] || 0), 0) / L.lcas))}%` : '';
   const hcRows = h ? [
     ['Worldwide', h.total_employees, h.total_source, h.total_as_of],
     ['United States', h.us_employees, h.us_source, h.us_as_of, h.us_plus], ['India', h.india_employees, h.india_source, h.india_as_of, h.india_plus], ['China', h.china_employees],
     ...(h.regional_breakdown || []).map(r => [r.label, r.value, r.source, r.as_of, r.plus]),
   ].map(([k, v, s, asof, plus]) => `<dt>${esc(k)}</dt><dd>${v == null ? '<span class="nd">not disclosed</span>' : fmt(v) + (plus ? '+' : '') + (asof ? ` <span class="nd">(${esc(asof)})</span>` : '') + src(s)}</dd>`).join('') : '<dt></dt><dd class="nd">Headcount research pending.</dd>';
-  const lay = c.layoffs ? c.layoffs.slice(0, 8).map(e => `<li><span>${e.date}</span><span>${e.count ? fmt(e.count) : 'undisclosed'} <a href="${esc(e.source)}">↗</a></span></li>`).join('') : '<li class="nd">Not tracked by layoffs.fyi (it covers tech companies only).</li>';
+  const lay = c.layoffs ? c.layoffs.slice(0, 8).map(e => `<li><span>${e.date}</span><span>${e.count ? fmt(e.count) : 'undisclosed'} <a class="src" href="${esc(e.source)}" title="Source" aria-label="News source for ${e.date}">↗</a></span></li>`).join('') + (c.layoffs.length > 8 ? `<li class="nd">…and ${c.layoffs.length - 8} earlier events on layoffs.fyi</li>` : '') : '<li class="nd">Not tracked by layoffs.fyi (it covers tech companies only).</li>';
   return `<div class="grid2">
     <div><h3>H-1B approvals by fiscal year</h3><div class="legend"><span><i style="background:var(--s1)"></i>New employment</span><span><i style="background:var(--s2)"></i>Extensions, transfers &amp; amendments</span></div><div class="bars"></div>
-      <p class="note">${c.note ? esc(c.note) + ' ' : ''}Filed as: ${c.legal_names.map(esc).join('; ')}</p>
+      ${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<details class="note"><summary style="cursor:pointer">Filed under ${c.legal_names.length} legal name${c.legal_names.length > 1 ? 's' : ''}</summary>${c.legal_names.map(esc).join('; ')}</details>
       <h3>L-1 approvals, FY2015–FY2019</h3><div class="legend"><span><i style="background:var(--s1)"></i>L-1A managers</span><span><i style="background:var(--s2)"></i>L-1B specialized knowledge</span><span><i style="background:var(--muted)"></i>Not split out</span></div><div class="l1bars"></div>
       <p class="note">The latest employer-level L-1 data USCIS has published. "+" means some small counts were hidden by USCIS. <a href="#l1">About L-1 data →</a></p></div>
     <div><h3>What the H-1B jobs pay</h3>${L ? `<dl class="kv"><dt>Median offered</dt><dd>${money(L.wage_median)}</dd><dt>Middle half</dt><dd>${money(L.wage_p25)} – ${money(L.wage_p75)}</dd><dt>Wage level</dt><dd>${lvl}</dd><dt>Certified LCAs</dt><dd>${fmt(L.lcas)} (${period()})</dd></dl>
@@ -541,7 +562,7 @@ function detailHTML(c) {
 function stackBars(labels, series, tip, fitTo, maxW = 360, marks = []) {  // marks: text drawn at the base of an empty bar
   const W = Math.max(280, Math.min(maxW, (fitTo && fitTo.clientWidth) || maxW)), H = Math.round(W * .47), P = { l: 44, r: 8, t: 10, b: 22 };
   const sums = labels.map((_, i) => series.reduce((t, se) => t + (se.values[i] || 0), 0));
-  const top = Math.max(...sums) || 1, mag = 10 ** Math.floor(Math.log10(top / 4)),
+  const top = Math.max(...sums) || 1, mag = Math.max(1, 10 ** Math.floor(Math.log10(top / 4))),
     step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(v => v * 4 >= top), max = step * 4;
   const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.width = '100%'; svg.style.maxWidth = W + 'px';
   const bw = (W - P.l - P.r) / labels.length, Y = v => P.t + (H - P.t - P.b) * (1 - v / max);
@@ -568,9 +589,9 @@ const fyLabel = (y, partial) => `FY${String(y).slice(2)}${partial ? '*' : ''}`;
 
 function approvalBars(c, fitTo) {
   const ys = FY(), last = ys.slice(-1)[0];
-  return stackBars(ys.map(y => fyLabel(y, y === last)),
+  return stackBars(ys.map(y => fyLabel(y, isPartial(y))),
     [{ color: 's1', values: ys.map(y => c.uscis[y].new || 0) }, { color: 's2', values: ys.map(y => (c.uscis[y].approvals || 0) - (c.uscis[y].new || 0)) }],
-    i => { const y = ys[i], u = c.uscis[y]; return `<b>FY${y}${y === last ? ' (Oct–Jun)' : ''}</b><br>Approved: ${fmt(u.approvals)}<br>New H-1B workers: ${fmt(u.new)}<br>Denied: ${fmt(u.denials)}`; }, fitTo);
+    i => { const y = ys[i], u = c.uscis[y]; return `<b>FY${y}${isPartial(y) ? ` (${soFar('uscis_through')})` : ''}</b><br>Approved: ${fmt(u.approvals)}<br>New H-1B workers: ${fmt(u.new)}<br>Denied: ${fmt(u.denials)}`; }, fitTo);
 }
 
 const L1Y = ['2015', '2016', '2017', '2018', '2019'];
@@ -587,7 +608,7 @@ function l1Text(v, short) { return !v || (!v.total && !v.withheld) ? '0' : !v.to
 let l1Drawn;
 function drawL1() {
   if (l1Drawn) return; l1Drawn = true;
-  const N = D.l1.national, ys = Object.keys(N.l1a), last = ys.slice(-1)[0], full = ys.slice(-2)[0];
+  const N = D.l1.national, ys = Object.keys(N.l1a), l1p = partialFY('l1_through'), last = ys.slice(-1)[0], full = l1p ? ys.slice(-2)[0] : last;
   const ap = (k, y) => (N[k][y] || {}).approved || 0, rate = (k, y) => { const v = N[k][y] || {}; return v.approved + v.denied ? 100 * v.denied / (v.approved + v.denied) : null; };
   const l1Full = ap('l1a', full) + ap('l1b', full);
   $('#l1tiles').innerHTML = [
@@ -596,12 +617,12 @@ function drawL1() {
     [Math.round(rate('l1b', full)) + '%', `of L-1B petitions denied in FY${full}, down from ${Math.round(Math.max(...ys.map(y => rate('l1b', y) || 0)))}% at the peak`],
     ['FY2019', 'latest year with L-1 approvals by employer'],
   ].map(([b, s]) => `<div class="tile"><b>${b}</b><span>${s}</span></div>`).join('');
-  $('#l1bars').append(stackBars(ys.map(y => fyLabel(y, y === last)), [{ color: 's1', values: ys.map(y => ap('l1a', y)) }, { color: 's2', values: ys.map(y => ap('l1b', y)) }],
-    i => { const y = ys[i]; return `<b>FY${y}${y === last ? ' (Oct–Jun)' : ''}</b><br>L-1A approved: ${fmt(ap('l1a', y))}<br>L-1B approved: ${fmt(ap('l1b', y))}<br>Received: ${fmt((N.l1a[y].received || 0) + (N.l1b[y].received || 0))}`; }, $('#l1bars'), 640));
-  $('#l1barsnote').textContent = `Individual L-1 petitions decided by USCIS (not blanket L). * FY${last} so far: Oct ${last - 1} – Jun ${last}. Source: USCIS quarterly I-129 reports.`;
+  $('#l1bars').append(stackBars(ys.map(y => fyLabel(y, l1p && y === last)), [{ color: 's1', values: ys.map(y => ap('l1a', y)) }, { color: 's2', values: ys.map(y => ap('l1b', y)) }],
+    i => { const y = ys[i]; return `<b>FY${y}${l1p && y === last ? ` (${soFar('l1_through')})` : ''}</b><br>L-1A approved: ${fmt(ap('l1a', y))}<br>L-1B approved: ${fmt(ap('l1b', y))}<br>Received: ${fmt((N.l1a[y].received || 0) + (N.l1b[y].received || 0))}`; }, $('#l1bars'), 640));
+  $('#l1barsnote').textContent = `Individual L-1 petitions decided by USCIS (not blanket L). ${l1p ? `* FY${last} so far: ${soFar('l1_through')}. ` : ''}Source: USCIS quarterly I-129 reports.`;
   const pct = v => v == null ? '—' : v.toFixed(1) + '%';
   $('#l1rates').innerHTML = `<thead><tr><th>Fiscal year</th><th>L-1A</th><th>L-1B</th><th>H-1B</th></tr></thead><tbody>` +
-    ys.map(y => `<tr><td>FY${y}${y === last ? '*' : ''}</td><td>${pct(rate('l1a', y))}</td><td>${pct(rate('l1b', y))}</td><td>${pct(rate('h1b', y))}</td></tr>`).join('') + '</tbody>';
+    ys.map(y => `<tr><td>FY${y}${l1p && y === last ? '*' : ''}</td><td>${pct(rate('l1a', y))}</td><td>${pct(rate('l1b', y))}</td><td>${pct(rate('h1b', y))}</td></tr>`).join('') + '</tbody>';
   const E = D.l1.entries, bl = y => ap('blanket', y);
   $('#l1counts').innerHTML = `<thead><tr><th>Count</th><th>Latest</th><th>What it measures</th></tr></thead><tbody>
     <tr><td><b>USCIS petitions approved</b></td><td>${fmt(l1Full + bl(full))} (FY${full})</td><td>Employer petitions, including extensions: L-1A ${fmt(ap('l1a', full))}, L-1B ${fmt(ap('l1b', full))}, blanket ${fmt(bl(full))}. Workers who come under a company's blanket approval aren't counted one by one.</td></tr>
@@ -651,7 +672,7 @@ function drawEmp() {
   $('#empstatus').textContent = q ? `${fmt(hits.length)} ${hits.length === 1 ? 'company matches' : 'companies match'} "${raw}".`
     : `Biggest sponsors first. Type to search all ${fmt(EMP.rows.length)}.`;
   const fyCell = (y, v) => `<td${y === lastFull() ? '' : ' class="wide"'}>${v ? fmt(v) : '—'}</td>`;
-  $('#emptable').innerHTML = !hits.length ? '' : `<thead><tr><th>Company</th>${ys.map(y => `<th${y === lastFull() ? '' : ' class="wide"'}>FY${String(y).slice(2)}${y === last ? '*' : ''}</th>`).join('')}<th>Total</th><th class="wide">H-1B filings<br>FY${String(last).slice(2)}</th><th>Median<br>salary</th></tr></thead><tbody>` +
+  $('#emptable').innerHTML = !hits.length ? '' : `<thead><tr><th>Company</th>${ys.map(y => `<th${y === lastFull() ? '' : ' class="wide"'}>FY${String(y).slice(2)}${isPartial(y) ? '*' : ''}</th>`).join('')}<th>Total</th><th class="wide">H-1B filings<br>FY${String(last).slice(2)}</th><th>Median<br>salary</th></tr></thead><tbody>` +
     hits.slice(0, empShown).map(r => {
       const co = r[n + 4] && D.companies.find(c => c.id === r[n + 4]), tot = r.slice(2, 2 + n).reduce((a, b) => a + b, 0);
       return `<tr><td>${esc(r[0])}<span class="st">${esc(r[1])}</span>${co ? ` <a href="#employers" class="tag" data-co="${co.id}">part of ${esc(co.short || co.name)}</a>` : ''}</td>` +
@@ -680,8 +701,8 @@ const BINS = [1, 10, 50, 250, 1000, 5000];
 let atlas, mapReady;
 function loadAtlas() {
   if (!mapReady) mapReady = Promise.all([
-    import('https://cdn.jsdelivr.net/npm/d3-geo@3/+esm'), import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm'),
-    fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json').then(r => r.json()),
+    import('https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/+esm'), import('https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm'),  // pinned versions
+    fetch('https://cdn.jsdelivr.net/npm/us-atlas@3.0.1/counties-albers-10m.json').then(r => r.json()),
   ]).then(([geo, topo, us]) => { atlas = { geo, topo, us }; });
   return mapReady;
 }
@@ -707,7 +728,7 @@ async function drawMap() {
   }
   s += `<path class="states" d="${path(topo.mesh(us, us.objects.states, (a, b) => a !== b))}"/></svg>`;
   $('#mapsvg').innerHTML = s;
-  $('#mapsvg').querySelectorAll('path.county').forEach(p => { p.onmousemove = p.onclick = e => showTip(e, `<b>${p.dataset.name}</b><br>${fmt(+p.dataset.n)} H-1B filings`); p.onmouseleave = hideTip; });
+  $('#mapsvg').querySelectorAll('path.county').forEach(p => { p.onmousemove = p.onclick = e => showTip(e, `<b>${esc(p.dataset.name)}</b><br>${fmt(+p.dataset.n)} H-1B filings`); p.onmouseleave = hideTip; });
   const total = Object.values(src.counties).reduce((a, b) => a + b, 0);
   $('#maplegend').innerHTML = ['0', ...BINS.map((b, i) => BINS[i + 1] ? `${fmt(b)}–${fmt(BINS[i + 1] - 1)}` : `${fmt(b)}+`)].map((l, i) => `<span><i style="background:var(--m${i})"></i>${l}</span>`).join('') + `<span class="nd">${Math.round(100 * matched / total)}% of filings placed on the map</span>`;
   // side list + state table
@@ -719,7 +740,7 @@ async function drawMap() {
     $('#toplist').innerHTML = D.lca_national.top_cities.slice(0, 15).map(([ci, st, n]) => `<li><span>${esc(ci)}, ${st}</span><span>${fmt(n)}</span></li>`).join('');
   }
   const st = Object.entries(D.lca_national.states).sort((a, b) => b[1].lcas - a[1].lcas);
-  $('#statetable').innerHTML = `<thead><tr><th>State</th><th>H-1B filings (all employers)</th><th>Share</th><th>Median salary offered</th></tr></thead><tbody>` +
+  $('#statetable').innerHTML = `<thead><tr><th>State</th><th>H-1B filings</th><th>Share</th><th>Median salary</th></tr></thead><tbody>` +
     st.slice(0, 20).map(([s, v]) => `<tr><td>${s}</td><td>${fmt(v.lcas)}</td><td>${(100 * v.lcas / D.lca_national.lcas).toFixed(1)}%</td><td>${money(v.wage_median)}</td></tr>`).join('') + '</tbody>';
 }
 function stateAbbr(f) { return Object.keys(FIPS).find(k => FIPS[k] === f) || ''; }
@@ -733,7 +754,7 @@ function loadNews() {
     if (!ok.length) return;
     const day = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
     $('#newslist').innerHTML = ok.map(i => `<li><time>${day(i.date)}</time><a href="${esc(i.url)}">${esc(i.title)}</a>${i.hit ? ' <span class="tag">Work visas</span>' : ''}</li>`).join('');
-    $('#newsmeta').textContent = '· checked ' + day(n.updated);
+    $('#newsmeta').textContent = '· updated ' + day(n.updated);
     $('#newscard').hidden = false;
   }).catch(() => { /* the links below still work */ });
 }
@@ -760,8 +781,8 @@ function drawGC() {
   $('#gctiles').innerHTML = AREAS.map(([a, label]) => {
     const v = ser[a].slice(-1)[0], d = pdDate(v, last);
     const yrs = d ? (monthDate(last) - d) / 3.156e10 : null;
-    const head = v === 'C' ? 'No wait' : v === 'U' ? 'Paused' : yrs.toFixed(1) + ' years behind';
-    const sub = v === 'C' ? 'the category is "current"' : v === 'U' ? 'no visas left this fiscal year' : 'cutoff ' + pretty(v);
+    const head = v === 'C' ? 'No wait' : v === 'U' ? 'Paused' : yrs == null ? '—' : yrs < 0.1 ? 'Nearly current' : `Cutoff ${yrs.toFixed(1)} years behind`;
+    const sub = v === 'C' ? 'the category is "current"' : v === 'U' ? 'no visas left this fiscal year' : v ? 'cutoff ' + pretty(v) : 'no data this month';
     return `<div class="tile"><b>${head}</b><span><b>${label}</b>, ${gc.cat.replace(/^EB/, 'EB-')}: ${sub} (${monthName(last)} bulletin)</span></div>`;
   }).join('');
   $('#gctitle').textContent = `${gc.cat.replace(/^EB/, 'EB-')} ${tname}s, ${monthName(months[0])} – ${monthName(last)}`;
@@ -789,7 +810,7 @@ function lineChart(el, months, series) {
   for (let yr = new Date(x0).getUTCFullYear(); yr <= new Date(x1).getUTCFullYear(); yr++) { const t = Date.UTC(yr, 0, 1); if (t < x0 || (W < 600 && yr % 2)) continue; s += `<text x="${X(t)}" y="${H - 8}" text-anchor="middle">${yr}</text>`; }
   // diagonal = "current" reference
   const dA = Math.max(x0, y0), dB = Math.min(x1, y1);
-  if (dB > dA) s += `<line x1="${X(dA)}" y1="${Y(dA)}" x2="${X(dB)}" y2="${Y(dB)}" stroke="var(--axis)"/>`;
+  if (dB > dA) s += `<line x1="${X(dA)}" y1="${Y(dA)}" x2="${X(dB)}" y2="${Y(dB)}" stroke="var(--muted)" stroke-dasharray="4 3"/>`;
   for (const se of series) {
     let d = '', pen = false;
     se.pts.forEach((p, i) => { if (!p) { pen = false; return; } d += `${pen ? 'L' : 'M'}${X(+xs[i]).toFixed(1)},${Y(+p).toFixed(1)}`; pen = true; });
