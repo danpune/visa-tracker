@@ -20,7 +20,7 @@
 <style>
 :root {
   color-scheme: light;
-  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #6f6d68; --link: #1c5cab;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #6b6964; --link: #1c5cab;
   --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,.10); --wash: #f0efec;
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --good: #006300; --bad: #d03b3b;
   --m0: #f0efec; --m1: #cde2fb; --m2: #9ec5f4; --m3: #6da7ec; --m4: #3987e5; --m5: #256abf; --m6: #104281;
@@ -28,7 +28,7 @@
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) {
     color-scheme: dark;
-    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7; --muted: #898781; --link: #5598e7;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #fff; --ink-2: #c3c2b7; --muted: #9a9892; --link: #5598e7;
     --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,.10); --wash: #262624;
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --good: #0ca30c; --bad: #e66767;
     --m0: #2c2c2a; --m1: #104281; --m2: #1c5cab; --m3: #2a78d6; --m4: #5598e7; --m5: #86b6ef; --m6: #cde2fb;
@@ -36,6 +36,7 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }  /* classes like .btn set display, which would otherwise override hidden */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { margin: 0; background: var(--page); color: var(--ink); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
 a { color: var(--link); }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px; }
@@ -53,6 +54,7 @@ main { max-width: 1180px; margin: 0 auto; padding: 16px; }
 section[hidden] { display: none; }
 h2 { font-size: 19px; margin: 8px 0 6px; }
 h3 { font-size: 16px; margin: 18px 0 6px; }
+h3 .note { font-weight: 400; }
 .note { color: var(--ink-2); font-size: 13px; }
 .card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 16px; margin: 12px 0; }
 .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
@@ -73,13 +75,29 @@ th.sortable:hover { color: var(--ink); }
 td { font-variant-numeric: tabular-nums; }
 th:first-child, td:first-child { text-align: left; }
 @media (max-width: 700px) { #emp .wide, #emptable .wide { display: none; } }
+@media (min-width: 1074px) { #empfew { display: none; } }
+.search::placeholder { color: var(--muted); opacity: 1; }
 .search { width: 100%; font: inherit; font-size: 16px; padding: 10px 12px; min-height: 44px; border-radius: 10px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); margin: 6px 0 4px; }
 #emptable td:first-child { white-space: normal; min-width: 140px; }
 @media (max-width: 500px) { #emptable th, #emptable td, #emp th, #emp td { padding: 7px 5px; } }
-#emptable .st { color: var(--muted); font-size: 12px; margin-left: 4px; }
+@media (max-width: 380px) { #emptable th, #emptable td { padding-left: 3px; padding-right: 3px; } #emptable td:first-child { min-width: 120px; } }
+#emptable .st { color: var(--muted); font-size: 13px; margin-left: 4px; }
 .phone-only { display: none; } @media (max-width: 700px) { .phone-only { display: block; } }
 #emp tr > :first-child:not(.detail) { position: sticky; left: 0; background: var(--surface); }
 #emp tr.row:hover > :first-child, #emp tr.open > :first-child { background: var(--wash); }
+/* #emp: the page scrolls it (not .scroll), so the header row can stick to the top of the window */
+#empwrap { overflow-x: visible; }
+#empwrap.x { overflow-x: auto; }  /* set by JS only if the table still doesn't fit; the header then scrolls away */
+#emp { border-collapse: separate; border-spacing: 0; }  /* collapsed borders don't travel with a stuck th */
+#emp th { position: sticky; top: 0; z-index: 2; background: var(--surface); border-bottom-color: var(--muted); }
+#emp td { border-bottom-color: var(--axis); }
+#emp .g { border-left: 1px solid var(--grid); }  /* starts a column group */
+#emp tr > :first-child:not(.detail) { border-right: 1px solid var(--grid); }
+#emp tr, #emp td * { scroll-margin-top: 74px; }  /* scrollIntoView and keyboard focus land below the frozen header (51px; 69px when headings wrap) */
+/* 701-1073px: 13 columns don't fit, so drop the least-used ones (all still in the company panel) */
+@media (max-width: 1073px) { #emp .mid1 { display: none; } }
+@media (max-width: 940px) { #emp .mid2 { display: none; } }
+@media (max-width: 380px) { #emp th { white-space: normal; } }  /* 360px phones: headings wrap so the table still fits */
 @media (max-width: 500px) { .tile > b { font-size: 21px; } }
 tbody tr.row { cursor: pointer; }
 tbody tr.row:hover, tbody tr.row.open { background: var(--wash); }
@@ -92,15 +110,15 @@ td.detail > .grid2 { position: sticky; left: 14px; }
 .kv dd { margin: 0; font-variant-numeric: tabular-nums; }
 ul.plain { list-style: none; padding: 0; margin: 0; }
 ul.plain li { padding: 3px 0; border-bottom: 1px solid var(--grid); display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
-.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin: 4px 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--ink-2); margin: 4px 0; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; }
 .seg { display: inline-flex; border: 1px solid var(--axis); border-radius: 8px; overflow: hidden; }
 .seg button { background: var(--surface); color: var(--ink-2); border: 0; padding: 6px 12px; min-height: 40px; font: inherit; font-size: 14px; cursor: pointer; }
 .seg button + button { border-left: 1px solid var(--axis); }
 .seg button[aria-pressed="true"] { background: #1c5cab; color: #fff; }
-select { font: inherit; font-size: 14px; padding: 6px 8px; min-height: 40px; border-radius: 8px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); }
-svg text { fill: var(--muted); font-size: 11px; }
+select { font: inherit; font-size: 16px; padding: 6px 8px; min-height: 44px; border-radius: 8px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); }
+svg text { fill: var(--muted); font-size: 12px; }
 .tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring); box-shadow: 0 4px 16px rgba(0,0,0,.15); border-radius: 8px; padding: 8px 10px; font-size: 13px; z-index: 10; display: none; max-width: 260px; }
 .maprow { display: grid; grid-template-columns: minmax(0, 3fr) minmax(240px, 1fr); gap: 16px; }
 @media (max-width: 800px) { .maprow { grid-template-columns: 1fr; } }
@@ -111,14 +129,14 @@ svg text { fill: var(--muted); font-size: 11px; }
 .steps { counter-reset: s; padding: 0; list-style: none; margin: 0; }
 .steps li { counter-increment: s; padding: 6px 0 6px 36px; position: relative; }
 .steps li::before { content: counter(s); position: absolute; left: 0; top: 6px; width: 24px; height: 24px; border-radius: 50%; background: #1c5cab; color: #fff; font-size: 13px; text-align: center; line-height: 24px; }
-.visas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr)); gap: 12px; }
+.visas { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr)); gap: 12px; }
 .visas .card { margin: 0; }
 .visas h3 { margin-top: 0; }
-.tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--wash); color: var(--ink-2); margin-left: 6px; font-weight: 400; }
+.tag { display: inline-block; font-size: 13px; padding: 1px 8px; border-radius: 10px; background: var(--wash); color: var(--ink-2); margin-left: 6px; font-weight: 400; }
 .cmp td, .cmp th { white-space: normal; text-align: left; vertical-align: top; }
 .up { color: var(--good); } .down { color: var(--bad); }
 ul.news li { display: block; }
-ul.news time { display: block; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+ul.news time { display: block; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
 ul.news a { color: var(--ink); text-decoration: none; }
 ul.news a:hover { text-decoration: underline; }
 footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(--ink-2); font-size: 13px; }
@@ -154,8 +172,8 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <h2>Top H-1B sponsors</h2>
     <p class="note">11 large H-1B sponsors from tech and IT services. Each company's US entities and the companies it owns today are added together, so Microsoft includes LinkedIn and Google includes all of Alphabet. <b>Click a company for details.</b> Click a column heading to sort.</p>
     <details class="note" style="margin:0 0 8px"><summary style="cursor:pointer"><b>What do the columns mean?</b></summary><div id="empnotes" style="margin-top:6px"></div></details>
-    <div class="scroll"><table id="emp"></table></div>
-    <p class="note phone-only">On a phone this shows the latest year, new workers and salary. Tap a company for every year, L-1, employees and layoffs.</p>
+    <div class="scroll" id="empwrap"><table id="emp"></table></div>
+    <p class="note" id="empfew">Smaller screens show fewer columns. Tap a company for every year, L-1, employees and layoffs.</p>
     <p class="note" id="fynote"></p>
   </div>
   <div class="card" id="allemp">
@@ -213,7 +231,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <select id="mapco"><option value="">All employers</option></select>
   </div>
   <div class="maprow">
-    <div class="card"><div id="mapsvg">Loading map…</div><div class="legend" id="maplegend"></div><p class="note" style="margin:4px 0 0">Darker = more H-1B job filings. Hover or tap a county for its number.</p></div>
+    <div class="card"><div id="mapsvg">Loading map…</div><div class="legend" id="maplegend"></div><p class="note" style="margin:4px 0 0">The key above shows what each shade means. Hover or tap a county for its number.</p></div>
     <div class="card"><h3 style="margin-top:0" id="toptitle">Top cities</h3><ul class="plain" id="toplist"></ul></div>
   </div>
   <div class="card">
@@ -493,16 +511,17 @@ function renderEmployers() {
   drawEmpTable();
 }
 
+// c = classes: wide hides on phones, mid1/mid2 hide on tablets, g starts a column group
 function empCols() {
   return [
-    ...FY().map(y => ({ k: 'fy' + y, wide: y !== lastFull(), h: `FY${String(y).slice(2)}${isPartial(y) ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
-    { k: 'new', h: `New H-1B<br>workers FY${String(lastFull()).slice(2)}`, v: c => c.uscis[lastFull()].new || 0, f: fmt },
-    { k: 'l1', wide: true, h: 'L-1<br>FY19†', v: c => { const v = c.l1['2019']; return v ? v.total || (v.withheld ? 1 : 0) : 0; }, f: (n, c) => l1Text(c.l1['2019'], true) },
-    { k: 'wage', h: 'Median<br>salary', v: c => c.lca && c.lca.wage_median, f: money },
-    { k: 'emp', wide: true, h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
-    { k: 'us', wide: true, h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
-    { k: 'in', wide: true, h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
-    { k: 'lay', wide: true, h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
+    ...FY().map((y, i) => ({ k: 'fy' + y, c: y === lastFull() ? '' : ['wide mid1', 'wide mid2'][i] || 'wide', h: `FY${String(y).slice(2)}${isPartial(y) ? '*' : ''}<br>approvals`, v: c => c.uscis[y].approvals || 0, f: fmt })),
+    { k: 'new', c: 'g', h: `New H-1B<br>workers FY${String(lastFull()).slice(2)}`, v: c => c.uscis[lastFull()].new || 0, f: fmt },
+    { k: 'l1', c: 'wide mid1 g', h: 'L-1<br>FY19†', v: c => { const v = c.l1['2019']; return v ? v.total || (v.withheld ? 1 : 0) : 0; }, f: (n, c) => l1Text(c.l1['2019'], true) },
+    { k: 'wage', c: 'g', h: 'Median<br>salary', v: c => c.lca && c.lca.wage_median, f: money },
+    { k: 'emp', c: 'wide g', h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
+    { k: 'us', c: 'wide mid2', h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
+    { k: 'in', c: 'wide mid2', h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
+    { k: 'lay', c: 'wide g', h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
   ];
 }
 
@@ -510,13 +529,16 @@ function drawEmpTable() {
   const cols = empCols(), col = cols.find(c => c.k === sortKey);
   const rows = [...D.companies].sort((a, b) => { const va = col.v(a), vb = col.v(b);  // missing values always last
     return va == null ? (vb == null ? 0 : 1) : vb == null ? -1 : sortDir * (va - vb); });
-  const cls = x => x.wide ? ' class="wide"' : '';
-  const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd${x.wide ? ' wide' : ''}" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">—</td>` : `<td${cls(x)}>${x.f(v, c)}</td>`; };
-  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable${x.wide ? ' wide' : ''}" data-k="${x.k}" aria-sort="${x.k === sortKey ? (sortDir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" class="sortbtn">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</button></th>`).join('')}</tr></thead><tbody>` +
+  const cls = x => x.c ? ` class="${x.c}"` : '';
+  const cell = (c, x) => { const v = x.v(c); return v == null ? `<td class="nd ${x.c || ''}" title="${x.k === 'lay' ? 'Not tracked by layoffs.fyi' : 'Not disclosed'}">—</td>` : `<td${cls(x)}>${x.f(v, c)}</td>`; };
+  $('#emp').innerHTML = `<thead><tr><th>Company</th>${cols.map(x => `<th class="sortable ${x.c || ''}" data-k="${x.k}" aria-sort="${x.k === sortKey ? (sortDir < 0 ? 'descending' : 'ascending') : 'none'}"><button type="button" class="sortbtn">${x.h}${x.k === sortKey ? (sortDir < 0 ? ' ▼' : ' ▲') : ''}</button></th>`).join('')}</tr></thead><tbody>` +
     rows.map(c => `<tr class="row" data-id="${c.id}"><td title="${esc(c.name)}"><button type="button" class="rowbtn" aria-expanded="false">${esc(c.short || c.name)}</button></td>${cols.map(x => cell(c, x)).join('')}</tr>`).join('') + '</tbody>';
   $('#emp').querySelectorAll('th.sortable').forEach(th => th.onclick = () => { sortDir = th.dataset.k === sortKey ? -sortDir : -1; sortKey = th.dataset.k; drawEmpTable(); $(`#emp th[data-k="${sortKey}"] .sortbtn`).focus(); });
   $('#emp').querySelectorAll('tr.row').forEach(tr => tr.onclick = () => toggleDetail(tr, cols.length + 1));
 }
+
+// ponytail: fixed breakpoints fit #emp with the Mac/iPhone system font; if it still overflows (other fonts, text zoom) it scrolls sideways as before and the header isn't frozen
+new ResizeObserver(() => $('#empwrap').classList.toggle('x', $('#emp').offsetWidth > $('#empwrap').clientWidth)).observe($('#emp'));
 
 function toggleDetail(tr, span) {
   const open = tr.classList.contains('open');
@@ -560,7 +582,7 @@ function detailHTML(c) {
 
 // Stacked bars: series[0] at the base, each later series stacked above with a 2px surface gap.
 function stackBars(labels, series, tip, fitTo, maxW = 360, marks = []) {  // marks: text drawn at the base of an empty bar
-  const W = Math.max(280, Math.min(maxW, (fitTo && fitTo.clientWidth) || maxW)), H = Math.round(W * .47), P = { l: 44, r: 8, t: 10, b: 22 };
+  const W = Math.max(240, Math.min(maxW, (fitTo && fitTo.clientWidth) || maxW)), H = Math.round(W * .47), P = { l: 44, r: 8, t: 10, b: 22 };
   const sums = labels.map((_, i) => series.reduce((t, se) => t + (se.values[i] || 0), 0));
   const top = Math.max(...sums) || 1, mag = Math.max(1, 10 ** Math.floor(Math.log10(top / 4))),
     step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(v => v * 4 >= top), max = step * 4;
@@ -798,7 +820,7 @@ function drawGC() {
 
 function lineChart(el, months, series) {
   // ponytail: sized once per draw; switching category redraws, a window resize doesn't
-  const W = Math.max(320, Math.min(900, el.clientWidth || 900)), H = W < 600 ? 260 : 360, P = { l: 44, r: 10, t: 12, b: 26 };
+  const W = Math.max(260, Math.min(900, el.clientWidth || 900)), H = W < 600 ? 260 : 360, P = { l: 44, r: 10, t: 12, b: 26 };
   const xs = months.map(monthDate), x0 = +xs[0], x1 = +xs.slice(-1)[0];
   const all = series.flatMap(s => s.pts.filter(Boolean).map(Number));
   const y0 = Math.min(...all), y1 = Math.max(...all);
