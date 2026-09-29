@@ -20,7 +20,9 @@ Run locally: `python3 -m http.server 8756`, then open http://localhost:8756
 | Layoffs | [layoffs.fyi](https://layoffs.fyi/) company pages (free to use with attribution) | Hand-copied into `layoffs.json` (2026-09-27). Tech companies only; Infosys/TCS/Cognizant/HCL aren't tracked. |
 | Headcount by country | Company 10-K / 20-F / annual reports / earnings releases | Hand-curated in `headcount.json` (Sept 2026), one source link per number; `null` = not disclosed. Full research notes, including how each figure was checked, in `headcount_research.json`. Microsoft and Cognizant figures re-checked word for word against the SEC filings. |
 
-Then `python3 build.py` → `data.json` (it asserts the data still looks sane).
+Then `python3 build.py` → `data.json` and `employers.json` (it asserts the data still looks sane, including that every employer row adds up to the USCIS national totals).
+
+`employers.json` (~6.5 MB, ~1.8 MB gzipped) lists every employer with at least one H-1B approval FY2022–FY2026 (≈126,000), named as filed and merged when names match after normalizing (drop &/AND, join spaced initials: "U S A" = "USA"). The page's search uses the same rule. The page fetches it only when someone uses the "Search every H-1B sponsor" box, so the home page stays small. Our tracked companies' rows carry a 10th field with the company id, which drives the "part of …" tag.
 
 ## Things that are easy to get wrong
 

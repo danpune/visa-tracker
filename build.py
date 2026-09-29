@@ -18,22 +18,43 @@ PER_YEAR = {"Year": 1, "Hour": 2080, "Week": 52, "Bi-Weekly": 26, "Month": 12}
 
 
 def norm(name):
-    return re.sub(r"[^A-Z0-9]+", " ", name.upper()).strip()
+    # Match key for employer names. USCIS wrote "JPMORGAN CHASE CO" (FY22-23) then "JPMORGAN CHASE AND CO" (FY24+),
+    # DOL writes "JPMorgan Chase & Co.", and initials come spaced or not ("U S A"/"USA", "L P"/"LP", "F K A"/"FKA").
+    # So: drop &/AND and join runs of single letters.
+    out, run = [], False
+    for w in re.sub(r"[^A-Z0-9]+", " ", name.upper().replace("&", " ")).split():
+        if w == "AND":
+            run = False
+            continue
+        if len(w) == 1 and run:
+            out[-1] += w
+        else:
+            out.append(w)
+        run = len(w) == 1 or (run and len(w) == 1)
+    return " ".join(out)
 
 
 companies = json.load(open("companies.json"))
-owner = {n: c["id"] for c in companies for n in c["names"]}
+owner = {norm(n): c["id"] for c in companies for n in c["names"]}
 
 # --- USCIS: approvals per employer per fiscal year -------------------------------------------
 uscis = {c["id"]: {y: Counter() for y in YEARS} for c in companies}
 national = {y: Counter() for y in YEARS}
+emp, emp_state = defaultdict(Counter), defaultdict(Counter)  # every employer, for employers.json
+unnamed = Counter()  # USCIS rows with a blank employer name (a dozen approvals a year)
 for y in YEARS:
     for row in csv.DictReader(open(f"raw/uscis_{y}.csv", encoding="utf-8-sig")):
         v = int(row["Measure Values"].replace(",", "") or 0)
         m = row["Measure Names"]
         kind = "approvals" if m.endswith("Approval") else "denials"
         keys = [kind] + (["new"] if m == "New Employment Approval" else [])
-        cid = owner.get(norm(row["Employer (Petitioner) Name"]))
+        n = norm(row["Employer (Petitioner) Name"])
+        cid = owner.get(n)
+        if not n and kind == "approvals":
+            unnamed[y] += v
+        if n and kind == "approvals":
+            emp[n][y] += v
+            emp_state[n][row["Petitioner State"]] += v
         for k in keys:
             national[y][k] += v
             if cid:
@@ -98,12 +119,38 @@ for r in lca_all:
 nat["top_cities"] = [[c, s, n] for (c, s), n in cities.most_common(20)]
 dates.sort()
 
+# --- Every H-1B sponsor -> employers.json (the page loads it only when someone searches) ---------
+# Names are as filed, merged only when they normalize to the same string ("AMAZON.COM SERVICES LLC" =
+# "AMAZON COM SERVICES LLC"). Our tracked companies keep their hand-made roll-up in data.json.
+lca_emp, spelled = defaultdict(list), defaultdict(Counter)
+for r in lca_all:
+    n = norm(r["EMPLOYER_NAME"])
+    lca_emp[n].append(r)
+    spelled[n][r["EMPLOYER_NAME"].strip()] += 1
+KEEP = {"LLC", "LLP", "LP", "PC", "PLLC", "PA", "USA", "US", "UK", "IT", "II", "III", "IV", "NA", "AI", "IBM", "HCL", "EY", "KPMG", "SAP", "PWC", "AT", "TT", "JP", "TCS"}
+def pretty(n):  # the DOL spelling when this employer filed LCAs, else title case that keeps common acronyms
+    name = spelled[n].most_common(1)[0][0] if spelled[n] else " ".join(w if w in KEEP else w.capitalize() for w in n.split())
+    return name.replace("\u00bf", "").replace("\ufffd", "").strip()  # a few DOL names carry stray '¿' characters
+emp_rows = []
+for n, ys in emp.items():
+    if not sum(ys.values()):
+        continue
+    wages = [w for w in (annual(r) for r in lca_emp.get(n, [])) if w]
+    emp_rows.append([pretty(n), emp_state[n].most_common(1)[0][0], *[ys[y] for y in YEARS],
+                     len(lca_emp.get(n, [])), round(statistics.median(wages) / 1000) if wages else 0])
+    if n in owner:  # only our tracked companies carry a 10th field
+        emp_rows[-1].append(owner[n])
+emp_rows.sort(key=lambda r: -sum(r[2:2 + len(YEARS)]))
+json.dump({"years": YEARS, "lca_period": [dates[0], dates[-1]],
+           "fields": ["name", "state", *[f"fy{y}" for y in YEARS], "lcas", "median_k", "tracked"], "rows": emp_rows},
+          open("employers.json", "w"), separators=(",", ":"), ensure_ascii=False)
+
 # --- Visa bulletin: EB1/EB2/EB3/F2A since 2016 (CI refreshes this part daily via bulletin.py) -----
 bulletin = shape(json.load(open("raw/visa_bulletin_mirror.json")))
 months = bulletin["months"]
 
 # --- L-1: employer-level only FY2015-2019 (USCIS stopped publishing), national through the latest quarter --
-l1_owner = {norm(n): c["id"] for c in companies for n in c.get("l1_names", [])}
+l1_owner = {l1.norm(n): c["id"] for c in companies for n in c.get("l1_names", [])}  # L-1 files keep their own simpler key
 l1_per, l1_totals, l1_top = l1.employer(l1_owner)
 l1_nat = l1.national()
 
@@ -125,6 +172,7 @@ out = {
     } for c in companies],
     "l1": {"employer_totals": l1_totals, "top_2019": l1_top, "national": l1_nat, "entries": l1.entries()},
     "bulletin": bulletin,
+    "employer_count": len(emp_rows),
     # when each source was last pulled; shown on the page so readers can judge freshness
     "updated": {"site": datetime.now(timezone.utc).date().isoformat(), "uscis": f"FY{YEARS[-1]} Q3", "lca": dates[-1],
                 "bulletin": months[-1], "layoffs": "2026-09-27", "headcount": "2026-09-27",
@@ -144,3 +192,8 @@ for c in out["companies"]:
 assert 50_000 < nat["wage_median"] < 250_000, "median wage looks wrong (unit parsing?)"
 assert l1_nat["h1b"][YEARS[-1]]["approved"] == national[YEARS[-1]]["approvals"], "I-129 workbook and Employer Data Hub disagree on H-1B"
 assert l1_per["tcs"][2019]["total"] == 1542, "L-1 employer parse changed"
+ec = {r[0]: r for r in emp_rows}
+assert len(emp_rows) > 100_000, "employers.json lost most employers"
+assert ec["Amazon.com Services LLC"][-1] == "amazon" and ec["Amazon.com Services LLC"][2 + YEARS.index(2026)] == 9337, "USCIS dashboard shows 9,337 for Amazon.com Services LLC FY2026"
+for y in YEARS:
+    assert sum(r[2 + YEARS.index(y)] for r in emp_rows) + unnamed[y] == national[y]["approvals"], f"FY{y} employer rows must add up to the national total"
