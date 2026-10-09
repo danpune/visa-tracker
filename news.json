@@ -1,6 +1,13 @@
 {
- "updated": "2026-09-30",
+ "updated": "2026-10-09",
  "items": [
+  {
+   "title": "USCIS Opens Asylum Office in Charlotte",
+   "url": "https://www.uscis.gov/newsroom/alerts/uscis-opens-asylum-office-in-charlotte",
+   "date": "2026-10-09",
+   "source": "USCIS alert",
+   "hit": false
+  },
   {
    "title": "USCIS Announces FY 2027 Inflation Increase for Certain Immigration-Related Fees",
    "url": "https://www.uscis.gov/newsroom/alerts/uscis-announces-fy-2027-inflation-increase-for-certain-immigration-related-fees",
@@ -61,13 +68,6 @@
    "title": "USCIS Issues Guidance on Making Public Charge Inadmissibility Determination",
    "url": "https://www.uscis.gov/newsroom/alerts/uscis-issues-guidance-on-making-public-charge-inadmissibility-determination",
    "date": "2026-08-18",
-   "source": "USCIS alert",
-   "hit": false
-  },
-  {
-   "title": "USCIS To Require Electronic Filing of Forms: Strengthening National Security",
-   "url": "https://www.uscis.gov/newsroom/alerts/uscis-to-require-electronic-filing-of-forms-strengthening-national-security",
-   "date": "2026-08-10",
    "source": "USCIS alert",
    "hit": false
   }
