@@ -9,7 +9,13 @@ concurrency:
   group: refresh
 jobs:
   refresh:
-    runs-on: ubuntu-latest
+    # NOT actions/setup-python: pinning the interpreter that way made USCIS
+    # return 403 on the sibling greencard repo (twice, while the system python
+    # fetched fine at the same moment — most likely TLS fingerprinting, same
+    # User-Agent either way). Pin the IMAGE instead, which keeps today's Python
+    # and OpenSSL and also answers the ubuntu-latest move to Ubuntu 26 on
+    # 19 Oct 2026.
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v5

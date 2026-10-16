@@ -27,8 +27,17 @@ if __name__ == "__main__":
     with urllib.request.urlopen(MIRROR, timeout=60) as r:
         new = shape(json.load(r))
     data = json.load(open("data.json"))
-    if new["months"][-1] < data["bulletin"]["months"][-1]:
+    old_m = data["bulletin"]["months"]
+    # The tip test alone protected only the newest month: a mirror truncated from
+    # the FRONT (2016-01..2026-10 -> 2024-01..2026-10) has the same last month,
+    # passes shape()'s contiguity check, and would have silently dropped eight
+    # years of history that the Green card chart draws.
+    if new["months"][-1] < old_m[-1]:
         sys.exit("mirror is older than what we have; keeping data.json")
+    if len(new["months"]) < len(old_m) or new["months"][0] > old_m[0]:
+        sys.exit(f"mirror covers {new['months'][0]}..{new['months'][-1]} "
+                 f"({len(new['months'])} months) but we have {old_m[0]}..{old_m[-1]} "
+                 f"({len(old_m)} months); keeping data.json")
     if new != data["bulletin"]:
         data["bulletin"] = new
         data["updated"]["bulletin"] = new["months"][-1]

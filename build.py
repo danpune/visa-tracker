@@ -6,7 +6,7 @@ Inputs (raw/ is gitignored, see README for where each comes from):
   raw/visa_bulletin_mirror.json   State Dept visa bulletin, mirrored (cross-checked, see README)
   companies.json, layoffs.json, headcount.json (hand-curated, sourced)
 """
-import csv, glob, json, re, statistics
+import csv, glob, json, os, re, statistics
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -147,12 +147,24 @@ for n, ys in emp.items():
     if n in owner:  # only our tracked companies carry a 10th field
         emp_rows[-1].append(owner[n])
 emp_rows.sort(key=lambda r: -sum(r[2:2 + len(YEARS)]))
-json.dump({"years": YEARS, "lca_period": [dates[0], dates[-1]],
-           "fields": ["name", "state", *[f"fy{y}" for y in YEARS], "lcas", "median_k", "tracked"], "rows": emp_rows},
-          open("employers.json", "w"), separators=(",", ":"), ensure_ascii=False)
+employers_out = {"years": YEARS, "lca_period": [dates[0], dates[-1]],
+                 "fields": ["name", "state", *[f"fy{y}" for y in YEARS], "lcas", "median_k", "tracked"],
+                 "rows": emp_rows}
 
 # --- Visa bulletin: EB1/EB2/EB3/F2A since 2016 (CI refreshes this part daily via bulletin.py) -----
 bulletin = shape(json.load(open("raw/visa_bulletin_mirror.json")))
+# raw/ is a gitignored local snapshot; CI refreshes the bulletin separately via
+# bulletin.py. Running build.py with an older snapshot used to publish last
+# month's cutoffs AND stamp them with today's date, i.e. present a rollback as
+# fresher. bulletin.py already makes this comparison; make it here too.
+try:
+    _published = json.load(open("data.json"))["bulletin"]
+    if _published["months"][-1] > bulletin["months"][-1]:
+        print(f"  keeping published bulletin {_published['months'][-1]} "
+              f"(raw mirror is older: {bulletin['months'][-1]})")
+        bulletin = _published
+except (OSError, ValueError, KeyError):
+    pass
 months = bulletin["months"]
 
 # --- L-1: employer-level only FY2015-2019 (USCIS stopped publishing), national through the latest quarter --
@@ -184,7 +196,6 @@ out = {
                 "bulletin": months[-1], "layoffs": "2026-09-27", "headcount": "2026-09-27",
                 "l1_through": L1_THROUGH, "l1_employer": f"FY{max(l1_totals)}"},
 }
-json.dump(out, open("data.json", "w"), separators=(",", ":"))
 print(f"FY{YEARS[0]}-{YEARS[-1]}; LCA {len(lca_all)} certified H-1B ({dates[0]}..{dates[-1]}); "
       f"bulletin {months[0]}..{months[-1]}")
 for c in out["companies"]:
@@ -198,6 +209,43 @@ for c in out["companies"]:
 assert 50_000 < nat["wage_median"] < 250_000, "median wage looks wrong (unit parsing?)"
 assert l1_nat["h1b"][YEARS[-1]]["approved"] == national[YEARS[-1]]["approvals"], "I-129 workbook and Employer Data Hub disagree on H-1B"
 assert l1_per["tcs"][2019]["total"] == 1542, "L-1 employer parse changed"
+
+# The per-company asserts above only reject zero and "fewer than 100", so a
+# renamed or dropped legal entity silently shrank a company by 38% and the build
+# stayed green. Nothing compared against what is already published. When the
+# source period has not moved, the numbers should not move either.
+try:
+    _prev = json.load(open("data.json"))
+except (OSError, ValueError):
+    _prev = None
+if _prev and _prev.get("updated", {}).get("uscis_through") == USCIS_THROUGH:
+    _by_id = {c["id"]: c for c in _prev["companies"]}
+    for c in out["companies"]:
+        was = _by_id.get(c["id"])
+        if not was:
+            continue
+        for y in YEARS:
+            # the previous build came back through JSON, so its year keys are strings
+            a = (was["uscis"].get(str(y)) or was["uscis"].get(y) or {}).get("approvals")
+            b = c["uscis"][y].get("approvals")
+            if a and b:
+                assert abs(b - a) <= 0.02 * a, \
+                    f'{c["id"]} FY{y}: approvals {a} -> {b} with the source period unchanged'
+        if was.get("lca") and c.get("lca"):
+            a, b = was["lca"]["lcas"], c["lca"]["lcas"]
+            assert abs(b - a) <= 0.02 * a, f'{c["id"]}: LCAs {a} -> {b} with the source period unchanged'
+
+# Only now that every check has passed do the outputs land, written via a temp
+# file and replaced atomically -- the pattern bulletin.py already uses. Before,
+# a failed assert left the bad data on disk for `git add` to pick up.
+def _write(path, payload, **kw):
+    tmp = path + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(payload, f, separators=(",", ":"), **kw)
+    os.replace(tmp, path)
+
+_write("employers.json", employers_out, ensure_ascii=False)
+_write("data.json", out)
 ec = {r[0]: r for r in emp_rows}
 fy_of = lambda d: int(d[:4]) + (d[5:7] >= "10")
 for d, last in ((USCIS_THROUGH, YEARS[-1]), (L1_THROUGH, max(l1_nat["l1a"]))):
