@@ -145,6 +145,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
 .btn { display: inline-block; font: inherit; font-size: 15px; font-weight: 600; padding: 10px 18px; margin: 4px; border-radius: 999px; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; }
 .btn.wa { background: #25d366; border-color: #25d366; color: #083b1d; }
 .visits b { color: var(--ink); font-variant-numeric: tabular-nums; }
+#empstatus{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
@@ -257,6 +258,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 8px 16px 40px; color: var(-
     <div class="seg" id="gccat"></div>
     <div class="seg" id="gctable"></div>
   </div>
+  <p class="note stale" id="gcstale" hidden></p>
   <div class="tiles" id="gctiles"></div>
   <p class="note" style="margin-top:-4px">"Years behind" is how far the cutoff date lags the bulletin month, not how long you will wait. For India and China, someone filing today will likely wait much longer, because many people are already in line ahead of them.</p>
   <div class="card">
@@ -484,6 +486,11 @@ const fyq = k => { const d = thru(k), m = d.getUTCMonth(); return `FY${d.getUTCF
 const isPartial = y => +y === +FY().slice(-1)[0] && partialFY('uscis_through');
 const lastFull = () => partialFY('uscis_through') ? FY().slice(-2)[0] : FY().slice(-1)[0];  // latest complete fiscal year
 function layoffSum(c) { return c.layoffs ? c.layoffs.filter(e => e.date >= '2022-01-01').reduce((s, e) => s + (e.count || 0), 0) : null; }
+// Events where layoffs.fyi published no number contribute 0 to the sum above.
+// Rendered as an exact integer that reads as complete -- Apple shows 914 from 7
+// events, 4 of which have no count. The L-1 and headcount columns already mark
+// this with "+"; do the same rather than imply precision we do not have.
+function layoffUndisclosed(c) { return c.layoffs ? c.layoffs.filter(e => e.date >= '2022-01-01' && !e.count).length : 0; }
 function hc(c, k) { return c.headcount ? c.headcount[k] : null; }
 let sortKey, sortDir = -1;  // sortKey set once data is loaded
 
@@ -521,7 +528,8 @@ function empCols() {
     { k: 'emp', c: 'wide g', h: 'Employees<br>worldwide', v: c => hc(c, 'total_employees'), f: fmt },
     { k: 'us', c: 'wide mid2', h: 'In<br>US', v: c => hc(c, 'us_employees'), f: (n, c) => fmt(n) + (hc(c, 'us_plus') ? '+' : '') },
     { k: 'in', c: 'wide mid2', h: 'In<br>India', v: c => hc(c, 'india_employees'), f: (n, c) => fmt(n) + (hc(c, 'india_plus') ? '+' : '') },
-    { k: 'lay', c: 'wide g', h: 'Laid off<br>since 2022', v: layoffSum, f: fmt },
+    { k: 'lay', c: 'wide g', h: 'Laid off<br>since 2022', v: layoffSum,
+      f: (n, c) => fmt(n) + (layoffUndisclosed(c) ? '+' : '') },
   ];
 }
 
@@ -691,7 +699,10 @@ function drawEmp() {
   if (!EMP || !D) return;  // data.json not in yet: the data.json handler calls drawEmp() once it is
   const raw = $('#empq').value.trim(), q = empKey(raw), ys = EMP.years, n = ys.length, last = ys.slice(-1)[0];
   const hits = q ? EMP.rows.filter((r, i) => EMP.keys[i].includes(q)) : EMP.rows;
-  $('#empstatus').textContent = q ? `${fmt(hits.length)} ${hits.length === 1 ? 'company matches' : 'companies match'} "${raw}".`
+  // Echoing the raw query untruncated pushed the whole document sideways: one
+  // unbroken 200-character token expanded the layout viewport from 375 to 1396.
+  const shown = raw.length > 60 ? raw.slice(0, 60) + '\u2026' : raw;
+  $('#empstatus').textContent = q ? `${fmt(hits.length)} ${hits.length === 1 ? 'company matches' : 'companies match'} "${shown}".`
     : `Biggest sponsors first. Type to search all ${fmt(EMP.rows.length)}.`;
   const fyCell = (y, v) => `<td${y === lastFull() ? '' : ' class="wide"'}>${v ? fmt(v) : '—'}</td>`;
   $('#emptable').innerHTML = !hits.length ? '' : `<thead><tr><th>Company</th>${ys.map(y => `<th${y === lastFull() ? '' : ' class="wide"'}>FY${String(y).slice(2)}${isPartial(y) ? '*' : ''}</th>`).join('')}<th>Total</th><th class="wide">H-1B filings<br>FY${String(last).slice(2)}</th><th>Median<br>salary</th></tr></thead><tbody>` +
@@ -799,6 +810,18 @@ function drawGC() {
   segs($('#gctable'), [['finalAction', 'Final action dates'], ['datesForFiling', 'Dates for filing']], 'table');
   const B = D.bulletin, months = B.months, last = months.slice(-1)[0], ser = B.series[gc.cat][gc.table];
   const tname = gc.table === 'finalAction' ? 'final action date' : 'date for filing';
+  // Is the bulletin we are showing still the one in effect? A new bulletin takes
+  // effect on the 1st, so compare calendar months in US Eastern, where the State
+  // Department publishes.
+  const nowM = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }).slice(0, 7);
+  const stale = $('#gcstale');
+  if (stale) {
+    if (last < nowM) {
+      stale.textContent = `Showing the ${monthName(last)} bulletin. ${monthName(nowM)} is now in `
+        + `effect — this page has not picked it up yet.`;
+      stale.hidden = false;
+    } else stale.hidden = true;
+  }
   // tiles: how far behind is each queue in the latest bulletin
   $('#gctiles').innerHTML = AREAS.map(([a, label]) => {
     const v = ser[a].slice(-1)[0], d = pdDate(v, last);
